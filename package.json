@@ -1,0 +1,14 @@
+{
+  "name": "prerender-spa-plugin",
+  "version": "1.0.0",
+  "description": "Prerenders static HTML in a single-page application.",
+  "main": "index.js",
+  "author": "Chris Fritz",
+  "license": "MIT",
+  "dependencies": {
+    "hapi": "13.2.2",
+    "inert": "3.2.0",
+    "mkdirp": "0.5.1",
+    "phantomjs-prebuilt": "2.1.7"
+  }
+}
