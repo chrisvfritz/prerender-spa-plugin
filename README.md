@@ -16,14 +16,37 @@ module.exports = {
 
   plugins: [
     new PrerenderSpaPlugin(
-      // (Required) Absolute path to static root
+      // (REQUIRED) Absolute path to static root
       Path.join(__dirname, 'relative/path/to/static/root'),
-      // (Required) List of routes to prerender
+      // (REQUIRED) List of routes to prerender
       [ '/', '/about', '/contact' ],
-      // (Optional) Options
+      // (OPTIONAL) Options
       {
-        // Number of milliseconds to wait for AJAX content to load
-        wait: 5000 // Default: 0
+        // NOTE: Unless you are relying on asynchronously rendered content,
+        // such as after an Ajax request, none of these options should be
+        // necessary. All synchronous scripts are already executed before
+        // capturing the page content.
+
+        // Wait until a specific event is fired on the document.
+        captureAfterDocumentEvent: 'custom-post-render-event',
+        // This is how you would trigger this example event:
+        // document.dispatchEvent(new Event('custom-post-render-event'))
+
+        // Wait until a specific element is detected with
+        // document.querySelector.
+        captureAfterElementExists: '#content',
+
+        // Wait until a number of milliseconds has passed after scripts
+        // have been executed. It's important to note that this may
+        // produce unreliable results when relying on network
+        // communication or other operations with highly variable timing.
+        captureAfterTime: 5000
+
+        // NOTE: You can even combine strategies if you like. For example,
+        // if you only _sometimes_ want to wait for an event to fire, you
+        // can create a timeout by combining captureAfterTime with
+        // captureAfterDocumentEvent. When combining strategies, page
+        // content will be captured after the first triggered strategy.
       }
     )
   ]
