@@ -1,0 +1,14 @@
+{
+  "name": "prerender-spa-plugin-generic-simple-example",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "webpack --progress --hide-modules --config webpack.config.js"
+  },
+  "dependencies": {
+    "prerender-spa-plugin": "git://github.com/chrisvfritz/prerender-spa-plugin.git"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^1.1.1",
+    "webpack": "^1.12.14"
+  }
+}
