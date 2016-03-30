@@ -10,7 +10,7 @@
     "inert": "3.2.0",
     "mkdirp": "0.5.1",
     "phantomjs-prebuilt": "2.1.7",
-    "portfinder": "^1.0.3"
+    "portfinder": "1.0.3"
   },
   "devDependencies": {
     "eslint": "^2.5.1",
