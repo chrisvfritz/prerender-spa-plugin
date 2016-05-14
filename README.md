@@ -1,8 +1,8 @@
-<p align="center"><img width="200" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
+<img width="150" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true">
 
-<h1 align="center">Prerender SPA Plugin</h1>
+# Prerender SPA Plugin
 
-<h4 align="center">highly configurable, JS framework agnostic static site generation</p>
+_highly configurable, JS framework agnostic static site generation_
 
 ## Usage
 
