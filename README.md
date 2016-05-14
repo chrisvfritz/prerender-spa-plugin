@@ -1,6 +1,8 @@
-# prerender-spa-plugin
+<p align="center"><img width="100" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
 
-Prerenders static HTML in a single-page application.
+# Prerender SPA Plugin
+
+highly configurable, JS framework agnostic static site generation
 
 ## Usage
 
