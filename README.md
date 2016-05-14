@@ -1,7 +1,7 @@
 <p align="center"><img width="150" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
 
 <p align="center">
-  <a href="https://badge.fury.io/js/prerender-spa-plugin"><img src="https://badge.fury.io/js/prerender-spa-plugin.svg" alt="npm version" height="18"></a>
+  <a href="https://badge.fury.io/js/prerender-spa-plugin"><img src="https://badge.fury.io/js/prerender-spa-plugin.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/prerender-spa-plugin"><img src="https://img.shields.io/npm/l/prerender-spa-plugin.svg" alt="License"></a>
 </p>
 
