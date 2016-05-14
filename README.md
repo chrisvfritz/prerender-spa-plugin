@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
+<p align="center"><img width="200" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
 
 <h1 align="center">Prerender SPA Plugin</h1>
 
