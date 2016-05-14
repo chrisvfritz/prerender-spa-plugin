@@ -2,7 +2,7 @@
 
 <h1 align="center">Prerender SPA Plugin</h1>
 
-<p align="center"><strong>highly configurable, JS framework agnostic static site generation</strong></p>
+<h4 align="center">highly configurable, JS framework agnostic static site generation</p>
 
 ## Usage
 
