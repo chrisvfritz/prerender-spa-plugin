@@ -47,13 +47,30 @@ module.exports = {
         // have been executed. It's important to note that this may
         // produce unreliable results when relying on network
         // communication or other operations with highly variable timing.
-        captureAfterTime: 5000
+        captureAfterTime: 5000,
 
         // NOTE: You can even combine strategies if you like. For example,
         // if you only _sometimes_ want to wait for an event to fire, you
         // can create a timeout by combining captureAfterTime with
         // captureAfterDocumentEvent. When combining strategies, page
         // content will be captured after the first triggered strategy.
+
+        // Because PhantomJS occasionally runs into an intermittent issue,
+        // we will retry a page capture up to 5 times by default. You may
+        // raise or lower this limit if you wish.
+        maxAttempts: 10,
+
+        // The options below expose configuration options for PhantomJS,
+        // for the rare case that you need special settings for specific
+        // systems or applications.
+
+        // http://phantomjs.org/api/command-line.html#command-line-options
+        phantomOptions: '--disk-cache=true',
+
+        // http://phantomjs.org/api/webpage/property/settings.html
+        phantomPageSettings: {
+          loadImages: true
+        }
       }
     )
   ]
