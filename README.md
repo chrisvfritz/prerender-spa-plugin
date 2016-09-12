@@ -81,4 +81,5 @@ module.exports = {
 
 - Only works with routing strategies using the HTML5 history API. No hash(bang) URLs.
 - The frontend rendering library must be capable of taking over after prerendering
-  - __Vue__: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
+  - __Vue 1.x__: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
+  - __Vue 2.x__: Make sure the root component has the same id as the element it's replacing
