@@ -60,6 +60,11 @@ module.exports = {
         // raise or lower this limit if you wish.
         maxAttempts: 10,
 
+        // Prevent PhantomJS from navigating away from the URL passed to it
+        // and prevent loading embedded iframes (e.g. Disqus and Soundcloud
+        // embeds), which are not ideal for SEO and may introduce JS errors.
+        navigationLocked: true,
+
         // The options below expose configuration options for PhantomJS,
         // for the rare case that you need special settings for specific
         // systems or applications.
