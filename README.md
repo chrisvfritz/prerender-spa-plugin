@@ -56,7 +56,7 @@ module.exports = {
         // content will be captured after the first triggered strategy.
 
         // Because PhantomJS occasionally runs into an intermittent issue,
-        // we will retry a page capture up to 5 times by default. You may
+        // we will retry a page capture up to 10 times by default. You may
         // raise or lower this limit if you wish.
         maxAttempts: 10,
 
