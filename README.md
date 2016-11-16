@@ -111,7 +111,7 @@ new HtmlWebpackPlugin({
     : config.build.index,
   template: 'index.html',
 
-  // Ensure all webpack <scripts> are injected into <head>
+  // Ensure all webpack <script> are injected into <head>
   inject: 'head',
   // Ensure chunks are evaluated in correct order
   chunksSortMode: 'dependency'
