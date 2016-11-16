@@ -88,3 +88,67 @@ module.exports = {
 - The frontend rendering library must be capable of taking over after prerendering
   - __Vue 1.x__: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
   - __Vue 2.x__: Make sure the root component has the same id as the element it's replacing
+
+
+##### Out-of-Order Webpack Chunks
+
+Generate and visit a prerendered endpoint. If the debug console reads `Uncaught ReferenceError: webpackJsonp is not defined`, then you likely have out-of-order webpack chunks.
+
+Depending on your project's complexity, `webpack` may dynamically inject additional chunks into the document as PhantomJS visits each endpoint. These `async` chunks [can be problematic](https://github.com/chrisvfritz/prerender-spa-plugin/issues/9), as there is no guarantee critical manifest scripts will be evaluated first.
+
+###### Solution
+
+Async-injected chunks are expected behavior for webpack and furthermore, the library is [hardcoded](https://github.com/webpack/webpack/blob/1.0/lib/JsonpMainTemplate.js#L70) to only inject into `<head>`, so we must configure `html-webpack-plugin` and use `inject: 'head'`
+
+```js
+// file: webpack.prod.conf.js
+
+// ...
+
+new HtmlWebpackPlugin({
+  filename: process.env.NODE_ENV === 'testing'
+    ? 'index.html'
+    : config.build.index,
+  template: 'index.html',
+
+  // Ensure all webpack <scripts> are injected into <head>
+  inject: 'head',
+  // Ensure chunks are evaluated in correct order
+  chunksSortMode: 'dependency'
+
+}),
+
+```
+
+Now, critical scripts will be evaluated before the DOM is fully parsed, so we listen for `DOMContentLoaded` _before_ mounting Vue:
+
+```js
+// file: main.js
+
+import Vue from 'vue'
+import App from './App.vue'
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // simple
+  new Vue({
+    el: '#app',
+    render: h => h(App)
+  })
+
+  // vue-router (2.x)
+  new Vue({
+  router,
+  template: `
+    <div id="app">
+      <router-view class="view"></router-view>
+    </div>
+    `
+  }).$mount('#app')
+
+  // vue-router (1.x)
+  router.start(App, '#app')
+
+})
+
+```
