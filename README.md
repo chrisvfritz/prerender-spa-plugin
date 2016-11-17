@@ -82,6 +82,42 @@ module.exports = {
 }
 ```
 
+#### Code Splitting
+
+If you're using [code splitting](https://webpack.github.io/docs/code-splitting.html), visits to some prerendered pages [might throw](https://github.com/chrisvfritz/prerender-spa-plugin/issues/9): `Uncaught ReferenceError: webpackJsonp is not defined`. That just means some asynchronous chunks that Webpack injects into `<head>` are being evaluated before your main scripts, often in `<body>`.
+
+If you're using `html-webpack-plugin`, you can resolve this by also injecting your main scripts into `<head>` with these options:
+
+```js
+new HtmlWebpackPlugin({
+  // ... your other options ...
+  // Ensure asynchronous chucnks are injected into <head>
+  inject: 'head',
+  // Ensure chunks are evaluated in correct order
+  chunksSortMode: 'dependency'
+})
+```
+
+If you have code that relies on the existence of `<body>` (and you almost certainly do), simply run it in a callback to the `DOMContentLoaded` event:
+
+```js
+document.addEventListener('DOMContentLoaded', function () {
+  // your code
+})
+```
+
+For example, if you're using Vue.js and mounting to a `<div id="app">` in `<body>`:
+
+``` js
+var root = new Vue({
+  // ...
+})
+
+document.addEventListener('DOMContentLoaded', function () {
+  root.$mount('#app')
+}
+```
+
 ### Caveats
 
 - Only works with routing strategies using the HTML5 history API. No hash(bang) URLs.
