@@ -115,7 +115,7 @@ var root = new Vue({
 
 document.addEventListener('DOMContentLoaded', function () {
   root.$mount('#app')
-}
+})
 ```
 
 ### Caveats
