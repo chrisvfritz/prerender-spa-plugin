@@ -6,6 +6,7 @@
   "author": "Chris Fritz",
   "license": "MIT",
   "dependencies": {
+    "async.each": "^0.5.2",
     "hapi": "13.2.2",
     "inert": "3.2.0",
     "lodash": "^4.13.1",
