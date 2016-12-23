@@ -14,6 +14,12 @@ SimpleHtmlPrecompiler.prototype.apply = function (compiler) {
   compiler.plugin('emit', function (compilation, done) {
     self.paths.forEach(function (outputPath) {
       compileToHTML(self.staticDir, outputPath, self.options, function (prerenderedHTML) {
+        if (self.options.postProcessHtml) {
+          prerenderedHTML = self.options.postProcessHtml({
+            html: prerenderedHTML,
+            route: outputPath
+          })
+        }
         var folder = Path.join(self.staticDir, outputPath)
         mkdirp(folder, function (error) {
           if (error) throw error

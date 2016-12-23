@@ -75,6 +75,29 @@ module.exports = {
         // http://phantomjs.org/api/webpage/property/settings.html
         phantomPageSettings: {
           loadImages: true
+        },
+
+        // Manually transform the HTML for each page after prerendering,
+        // for example to set the page title and metadata in edge cases
+        // where you cannot handle this via your routing solution.
+        //
+        // The function's context argument contains two properties:
+        //
+        // - html :: the resulting HTML after prerendering)
+        // - route :: the route currently being processed
+        //            e.g. "/", "/about", or "/contact")
+        //
+        // Whatever is returned will be printed to the prerendered file.
+        postProcessHtml: function (context) {
+          var titles = {
+            '/': 'Home',
+            '/about': 'Our Story',
+            '/contact': 'Contact Us'
+          }
+          return context.html.replace(
+            /<title>[^<]*<\/title>/i,
+            '<title>' + titles[context.route] + '</title>'
+          )
         }
       }
     )
