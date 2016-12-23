@@ -55,6 +55,9 @@ module.exports = {
         // captureAfterDocumentEvent. When combining strategies, page
         // content will be captured after the first triggered strategy.
 
+        // Instead of loudly failing on JS errors (the default), ignore them.
+        ignoreJSErrors: true,
+
         // Because PhantomJS occasionally runs into an intermittent issue,
         // we will retry a page capture up to 10 times by default. You may
         // raise or lower this limit if you wish.
