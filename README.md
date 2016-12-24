@@ -9,11 +9,47 @@
 
 <p align="center"><em>highly configurable, framework-agnostic static site generation for SPAs</em></p>
 
+## Prerendering vs Server-Side Rendering (SSR)
+
+SSR is, like, _super_ hot right now. Personally though, I think it's overrated. It can significantly increase the complexity of your application and for many use cases, prerendering is a simpler and more appropriate solution. These are the top 2 problems people are typically trying to solve with either of these strategies:
+
+1. __SEO__: When content is loaded asynchronously, crawlers won't wait for it to be loaded.
+2. __Slow clients__: When users are accessing your site on a bad Internet connection, you want to be able to show them content as soon as possible, even before all your JS is downloaded and parsed.
+
+Prerendering can improve SEO just as well as SSR, with significantly less setup. As for slow clients, prerendering can serve content even faster and for much cheaper, as a global CDN is much less expensive than globally distributed servers.
+
+Now, here's where prerendering _isn't_ appropriate:
+
+- __User-specific content__: For a route like `/my-profile`, prerendering won't be effective, because the content of that page will be very different depending on who's looking at it. You can sometimes update your routing strategy to compensate, e.g. with `/users/:username/profile`, but only if these are public profiles. Otherwise, you risk leaking private information to the world.
+- __Frequently changing content__: If you prerender something like a game leaderboard that's constantly updating with new player rankings, prerendering will display old content until the client-side JS takes over with the latest data. This could be jarring to users. As a potential solution, you could set your build to re-prerender every minute or so. Netlify and some other static hosts provide webhooks you can use to trigger rebuilds for purposes like this. For data that updates even more frequently every minute, you should avoid prerendering.
+- __Thousands of routes__: I wouldn't recommend prerendering thousands of routes, as this could add an hour or more to your build process. Yikes!
+
 ## Usage
 
-### Webpack
+### Webpack (Simple)
 
 ``` js
+// webpack.conf.js
+var Path = require('path')
+var PrerenderSpaPlugin = require('prerender-spa-plugin')
+
+module.exports = {
+  // ...
+  plugins: [
+    new PrerenderSpaPlugin(
+      // Absolute path to compiled SPA
+      Path.join(__dirname, '../dist'),
+      // List of routes to prerender
+      [ '/', '/about', '/contact' ]
+    )
+  ]
+}
+```
+
+### Webpack (Advanced)
+
+``` js
+// webpack.conf.js
 var Path = require('path')
 var PrerenderSpaPlugin = require('prerender-spa-plugin')
 
