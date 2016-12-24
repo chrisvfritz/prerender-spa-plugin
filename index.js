@@ -11,29 +11,43 @@ function SimpleHtmlPrecompiler (staticDir, paths, options) {
 
 SimpleHtmlPrecompiler.prototype.apply = function (compiler) {
   var self = this
-  compiler.plugin('emit', function (compilation, done) {
-    self.paths.forEach(function (outputPath) {
-      compileToHTML(self.staticDir, outputPath, self.options, function (prerenderedHTML) {
-        if (self.options.postProcessHtml) {
-          prerenderedHTML = self.options.postProcessHtml({
-            html: prerenderedHTML,
-            route: outputPath
-          })
-        }
-        var folder = Path.join(self.staticDir, outputPath)
-        mkdirp(folder, function (error) {
-          if (error) throw error
-          FS.writeFile(
-            Path.join(folder, 'index.html'),
-            prerenderedHTML,
-            function (error) {
-              if (error) throw error
+  compiler.plugin('after-emit', function (compilation, done) {
+    Promise.all(
+      self.paths.map(function (outputPath) {
+        return new Promise(function (resolve, reject) {
+          compileToHTML(self.staticDir, outputPath, self.options, function (prerenderedHTML) {
+            if (self.options.postProcessHtml) {
+              prerenderedHTML = self.options.postProcessHtml({
+                html: prerenderedHTML,
+                route: outputPath
+              })
             }
-          )
+            var folder = Path.join(self.staticDir, outputPath)
+            mkdirp(folder, function (error) {
+              if (error) {
+                return reject('Folder could not be created: ' + folder + '\n' + error)
+              }
+              var file = Path.join(folder, 'index.html')
+              FS.writeFile(
+                file,
+                prerenderedHTML,
+                function (error) {
+                  if (error) {
+                    return reject('Could not write file: ' + file + '\n' + error)
+                  }
+                  resolve()
+                }
+              )
+            })
+          })
         })
       })
+    )
+    .then(function () { done() })
+    .catch(function (error) {
+      // setTimeout prevents the Promise from swallowing the throw
+      setTimeout(function () { throw error })
     })
-    done()
   })
 }
 
