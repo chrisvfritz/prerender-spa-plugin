@@ -22,7 +22,7 @@ SimpleHtmlPrecompiler.prototype.apply = function (compiler) {
                 route: outputPath
               })
             }
-            var folder = Path.join(self.staticDir, outputPath)
+            var folder = Path.join(self.options.outputDir || self.staticDir, outputPath)
             mkdirp(folder, function (error) {
               if (error) {
                 return reject('Folder could not be created: ' + folder + '\n' + error)
