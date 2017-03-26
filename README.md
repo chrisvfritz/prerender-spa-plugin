@@ -98,6 +98,11 @@ module.exports = {
         // we will retry a page capture up to 10 times by default. You may
         // raise or lower this limit if you wish.
         maxAttempts: 10,
+		
+        // If you have many routes, you may want to define the number of 
+        // workers processing at the same time. 
+        // Default is as many workers as routes.
+        nbWorkers: 5,
 
         // Prevent PhantomJS from navigating away from the URL passed to it
         // and prevent loading embedded iframes (e.g. Disqus and Soundcloud
