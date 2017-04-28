@@ -153,7 +153,7 @@ If you're using `html-webpack-plugin`, you can resolve this by also injecting yo
 ```js
 new HtmlWebpackPlugin({
   // ... your other options ...
-  // Ensure asynchronous chucnks are injected into <head>
+  // Ensure asynchronous chunks are injected into <head>
   inject: 'head',
   // Ensure chunks are evaluated in correct order
   chunksSortMode: 'dependency'
