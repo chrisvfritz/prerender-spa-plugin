@@ -117,7 +117,13 @@ module.exports = {
         phantomPageSettings: {
           loadImages: true
         },
-
+        
+        // http://phantomjs.org/api/webpage/property/viewport-size.html
+        phantomPageViewportSize: {
+          width: 1280,
+          height: 800
+        },
+        
         // Manually transform the HTML for each page after prerendering,
         // for example to set the page title and metadata in edge cases
         // where you cannot handle this via your routing solution.
