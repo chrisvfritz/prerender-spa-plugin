@@ -95,6 +95,9 @@ module.exports = {
 
         // Instead of loudly failing on JS errors (the default), ignore them.
         ignoreJSErrors: true,
+        
+        // Path of index file. By default it's index.html in static root.
+        indexPath: path.resolve('/dist/path/to/index.html'),
 
         // Because PhantomJS occasionally runs into an intermittent issue,
         // we will retry a page capture up to 10 times by default. You may
