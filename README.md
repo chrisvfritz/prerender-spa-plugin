@@ -95,7 +95,7 @@ module.exports = {
 
         // Instead of loudly failing on JS errors (the default), ignore them.
         ignoreJSErrors: true,
-        
+
         // Path of index file. By default it's index.html in static root.
         indexPath: path.resolve('/dist/path/to/index.html'),
 
@@ -120,13 +120,13 @@ module.exports = {
         phantomPageSettings: {
           loadImages: true
         },
-        
+
         // http://phantomjs.org/api/webpage/property/viewport-size.html
         phantomPageViewportSize: {
           width: 1280,
           height: 800
         },
-        
+
         // Manually transform the HTML for each page after prerendering,
         // for example to set the page title and metadata in edge cases
         // where you cannot handle this via your routing solution.
@@ -190,6 +190,34 @@ document.addEventListener('DOMContentLoaded', function () {
   root.$mount('#app')
 })
 ```
+
+#### Catch-all page
+
+If you have routes where you want dynamic content to load, exactly like a SPA Vue build, (e.g. you want `/login` to fallback to a usual empty HTML document with nothing but `<div id="app">`) you should adjust your build process slightly to generate an additional page.
+
+Add an additional `HtmlWebpackPlugin` and set the `filename` as appropriate:
+
+```js
+[
+  new HtmlWebpackPlugin({
+    // Pre-existing HtmlWebpackPlugin options
+    filename: process.env.NODE_ENV === 'testing'
+      ? 'index.html'
+      : config.build.index,
+    template: path.join(__dirname, '..', 'src', 'index.html'),
+    // ... other options ...
+  }),
+  new HtmlWebpackPlugin({
+    filename: '404.html', // catchall.html error.html fallback.html page.html
+    template: path.join(__dirname, '..', 'src', 'index.html'),
+    // ... other options ...
+  })
+]
+```
+
+You can set the filename to whatever you'd like, personally I find it's easier to name the filename to suit the static host that's serving it, [GitHub Pages likes `404.html`](https://help.github.com/articles/creating-a-custom-404-page-for-your-github-pages-site/) whereas [AWS S3 suggests `error.html`](http://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html).
+
+**Important note** when serving these pages: Unless you are serving these pages yourself, static hosts like GitHub & S3 will serve the error page with `HTTP/1.1 404 Not Found`. For actual visitors that won't matter but for SEO you may wish to either add `rel="nofollow"` to links to content that is dynamically rendered. Or if you're using S3 you can serve your website through CloudFront and force it to set `HTTP/1.1 200 OK` for origin requests that return `404`.
 
 ### Caveats
 
