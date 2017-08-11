@@ -1,5 +1,5 @@
 {
-  "name": "prerender-spa-plugin-generic-simple-example",
+  "name": "prerender-spa-plugin-example-vue-simple",
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --progress --hide-modules --config webpack.config.js"
