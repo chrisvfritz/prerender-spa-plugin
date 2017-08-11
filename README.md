@@ -1,5 +1,3 @@
-**MAINTAINERS WANTED**: Ahh, so much open source! With my current workload, I simply don't have time to give this project the attention it deserves. If you're interested in becoming a maintainer, please [tweet me](https://twitter.com/chrisvfritz) to let me know!
-
 <p align="center"><img width="150" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
 
 <p align="center">
@@ -166,7 +164,7 @@ module.exports = {
 }
 ```
 
-#### Code Splitting
+### Code Splitting
 
 If you're using [code splitting](https://webpack.github.io/docs/code-splitting.html), visits to some prerendered pages [might throw](https://github.com/chrisvfritz/prerender-spa-plugin/issues/9): `Uncaught ReferenceError: webpackJsonp is not defined`. That just means some asynchronous chunks that Webpack injects into `<head>` are being evaluated before your main scripts, often in `<body>`.
 
@@ -182,6 +180,8 @@ new HtmlWebpackPlugin({
 })
 ```
 
+### Tips 
+ 
 If you have code that relies on the existence of `<body>` (and you almost certainly do), simply run it in a callback to the `DOMContentLoaded` event:
 
 ```js
@@ -202,9 +202,26 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 ```
 
+### Troubleshooting
+
+On Windows-based systems, users have reported `COM` errors when trying to build. This may be due to an outdated `phantomjs-prebuilt` package.
+
+```bash
+npm cache clean --force
+npm install
+npm rebuild
+```
+
 ### Caveats
 
 - Only works with routing strategies using the HTML5 history API. No hash(bang) URLs.
 - The frontend rendering library must be capable of taking over after prerendering
   - __Vue 1.x__: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
   - __Vue 2.x__: Make sure the root component has the same id as the element it's replacing
+
+
+<br>
+
+---
+
+**MAINTAINERS WANTED**: Ahh, so much open source! With my current workload, I simply don't have time to give this project the attention it deserves. If you're interested in becoming a maintainer, please [tweet me](https://twitter.com/chrisvfritz) to let me know!
