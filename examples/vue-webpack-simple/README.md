@@ -5,7 +5,7 @@ The simplest possible example of a prerendered static site, using JavaScript wit
 ## Usage
 
 ```
-cd path/to/examples/generic-simple
+cd prerender-spa-plugin/examples/vue-webpack-simple
 npm install
 npm run build
 ```

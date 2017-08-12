@@ -1,5 +1,3 @@
-**MAINTAINERS WANTED**: Ahh, so much open source! With my current workload, I simply don't have time to give this project the attention it deserves. If you're interested in becoming a maintainer, please [tweet me](https://twitter.com/chrisvfritz) to let me know!
-
 <p align="center"><img width="150" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
 
 <p align="center">
@@ -17,6 +15,7 @@ SSR is, like, _super_ hot right now. Personally though, I think it's overrated. 
 
 1. __SEO__: When content is loaded asynchronously, crawlers won't wait for it to be loaded.
 2. __Slow clients__: When users are accessing your site on a bad Internet connection, you want to be able to show them content as soon as possible, even before all your JS is downloaded and parsed.
+3. __OpenGraph / Social Metadata__: Facebook, Twitter, and networks that prefetch metadata to render rich previews are particularly sensitive to asynchronously rendered content. Often, they will fail to fetch unique metadata about your page unless the `<meta>` tags are statically rendered.
 
 Prerendering can improve SEO just as well as SSR, with significantly less setup. As for slow clients, prerendering can serve content even faster and for much cheaper, as a global CDN is much less expensive than globally distributed servers.
 
@@ -26,13 +25,23 @@ Now, here's where prerendering _isn't_ appropriate:
 - __Frequently changing content__: If you prerender something like a game leaderboard that's constantly updating with new player rankings, prerendering will display old content until the client-side JS takes over with the latest data. This could be jarring to users. As a potential solution, you could set your build to re-prerender every minute or so. Netlify and some other static hosts provide webhooks you can use to trigger rebuilds for purposes like this. For data that updates even more frequently every minute, you should avoid prerendering.
 - __Thousands of routes__: I wouldn't recommend prerendering thousands of routes, as this could add an hour or more to your build process. Yikes!
 
+<br>
+
+### Example Projects
+
+- **[Vuejs 2.x with vue-router](https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/examples/vue2-webpack-router/README.md)**
+
+- [Vuejs 1.x simple barebones](https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/examples/vue-webpack-simple/README.md)
+
+<br>
+
 ## Usage
 
 ### Webpack (Simple)
 
 ``` js
 // webpack.conf.js
-var Path = require('path')
+var path = require('path')
 var PrerenderSpaPlugin = require('prerender-spa-plugin')
 
 module.exports = {
@@ -40,7 +49,7 @@ module.exports = {
   plugins: [
     new PrerenderSpaPlugin(
       // Absolute path to compiled SPA
-      Path.join(__dirname, '../dist'),
+      path.join(__dirname, '../dist'),
       // List of routes to prerender
       [ '/', '/about', '/contact' ]
     )
@@ -52,7 +61,7 @@ module.exports = {
 
 ``` js
 // webpack.conf.js
-var Path = require('path')
+var path = require('path')
 var PrerenderSpaPlugin = require('prerender-spa-plugin')
 
 module.exports = {
@@ -62,7 +71,7 @@ module.exports = {
   plugins: [
     new PrerenderSpaPlugin(
       // (REQUIRED) Absolute path to static root
-      Path.join(__dirname, 'relative/path/to/static/root'),
+      path.join(__dirname, 'relative/path/to/static/root'),
       // (REQUIRED) List of routes to prerender
       [ '/', '/about', '/contact' ],
       // (OPTIONAL) Options
@@ -96,7 +105,7 @@ module.exports = {
         // Instead of loudly failing on JS errors (the default), ignore them.
         ignoreJSErrors: true,
         
-        // Path of index file. By default it's index.html in static root.
+        // path of index file. By default it's index.html in static root.
         indexPath: path.resolve('/dist/path/to/index.html'),
 
         // Because PhantomJS occasionally runs into an intermittent issue,
@@ -155,7 +164,7 @@ module.exports = {
 }
 ```
 
-#### Code Splitting
+### Code Splitting
 
 If you're using [code splitting](https://webpack.github.io/docs/code-splitting.html), visits to some prerendered pages [might throw](https://github.com/chrisvfritz/prerender-spa-plugin/issues/9): `Uncaught ReferenceError: webpackJsonp is not defined`. That just means some asynchronous chunks that Webpack injects into `<head>` are being evaluated before your main scripts, often in `<body>`.
 
@@ -171,6 +180,8 @@ new HtmlWebpackPlugin({
 })
 ```
 
+### Tips 
+ 
 If you have code that relies on the existence of `<body>` (and you almost certainly do), simply run it in a callback to the `DOMContentLoaded` event:
 
 ```js
@@ -191,9 +202,26 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 ```
 
+### Troubleshooting
+
+On Windows-based systems, users have reported `COM` errors when trying to build. This may be due to an outdated `phantomjs-prebuilt` package.
+
+```bash
+npm cache clean --force
+npm install
+npm rebuild
+```
+
 ### Caveats
 
 - Only works with routing strategies using the HTML5 history API. No hash(bang) URLs.
 - The frontend rendering library must be capable of taking over after prerendering
   - __Vue 1.x__: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
   - __Vue 2.x__: Make sure the root component has the same id as the element it's replacing
+
+
+<br>
+
+---
+
+**MAINTAINERS WANTED**: Ahh, so much open source! With my current workload, I simply don't have time to give this project the attention it deserves. If you're interested in becoming a maintainer, please [tweet me](https://twitter.com/chrisvfritz) to let me know!
