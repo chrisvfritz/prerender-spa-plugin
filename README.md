@@ -202,6 +202,12 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 ```
 
+#### Inline style tags handling
+
+If you rely on inline CSS, i.e. you do not extract CSS from your bundle and, thus, experience duplicate CSS style tags, consider using [extract-text-webpack-plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin) to extract CSS into a separate file and then either inject CSS back into a `template.html` file using [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin) or just call it as an external CSS file.
+
+Either way, there will not be any unnecessary styles inside JS.
+
 ### Troubleshooting
 
 On Windows-based systems, users have reported `COM` errors when trying to build. This may be due to an outdated `phantomjs-prebuilt` package.
