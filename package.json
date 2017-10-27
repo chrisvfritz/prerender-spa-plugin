@@ -11,7 +11,7 @@
     "inert": "3.2.0",
     "lodash": "^4.13.1",
     "mkdirp": "0.5.1",
-    "phantomjs-prebuilt": "2.1.8",
+    "phantomjs-prebuilt": "2.1.15",
     "portfinder": "1.0.3"
   },
   "devDependencies": {
