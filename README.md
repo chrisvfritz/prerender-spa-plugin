@@ -119,7 +119,7 @@ module.exports = {
         navigationLocked: true,
 
         // Specify the name of the rendered .html file
-        outputFile: 'index.html'
+        outputFile: 'index.html',
 
         // The options below expose configuration options for PhantomJS,
         // for the rare case that you need special settings for specific
