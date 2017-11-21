@@ -17,7 +17,7 @@
     "css-loader": "^0.25.0",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.30.1",
-    "prerender-spa-plugin": "*",
+    "prerender-spa-plugin": "^2.1.0",
     "vue-loader": "^12.1.0",
     "vue-router": "^2.7.0",
     "vue-template-compiler": "^2.3.3",
