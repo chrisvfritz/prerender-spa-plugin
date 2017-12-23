@@ -24,3 +24,9 @@ new Vue({
   router,
   render: h => h(App)
 })
+
+setTimeout(function () {
+  const div = document.createElement('div')
+  div.id = 'hello'
+  document.body.appendChild(div)
+}, 5000)
