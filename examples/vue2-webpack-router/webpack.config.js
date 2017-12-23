@@ -62,12 +62,7 @@ if (process.env.NODE_ENV === 'production') {
       [ '/', '/about', '/contact' ],
       {
         // options
-        browser: 'chrome',
-        // captureAfterTime: 1000,
-        captureAfterElementExists: '#hello'
-        // chromeOptions: {
-        //   headless: false
-        // }
+        browser: 'chrome'
       }
     )
   ])
