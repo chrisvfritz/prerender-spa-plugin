@@ -63,10 +63,11 @@ if (process.env.NODE_ENV === 'production') {
       {
         // options
         browser: 'chrome',
-        captureAfterElementExists: '#hello',
-        chromeOptions: {
-          headless: false
-        }
+        // captureAfterTime: 1000,
+        captureAfterElementExists: '#hello'
+        // chromeOptions: {
+        //   headless: false
+        // }
       }
     )
   ])
