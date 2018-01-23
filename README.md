@@ -227,6 +227,9 @@ npm rebuild
   - __Vue 1.x__: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
   - __Vue 2.x__: Make sure the root component has the same id as the element it's replacing
 
+## Alternatives
+
+- [react-snap](https://github.com/stereobooster/react-snap)
 
 <br>
 
