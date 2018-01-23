@@ -1,6 +1,7 @@
 var Path = require('path')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var PrerenderSpaPlugin = require('prerender-spa-plugin')
+const Renderer = PrerenderSpaPlugin.PuppeteerRenderer
 
 module.exports = {
   entry: [ './src/main.js' ],
@@ -13,9 +14,16 @@ module.exports = {
       from: 'src/static',
       to: '.'
     }]),
-    new PrerenderSpaPlugin(
-      Path.join(__dirname, 'dist'),
-      [ '/' ]
-    )
+    new PrerenderSpaPlugin({
+      staticDir: path.join(__dirname, 'dist'),
+      outputDir: path.join(__dirname, 'prerendered'),
+      routes: [ '/' ],
+
+      renderer: new Renderer({
+        inject: {
+          foo: 'bar'
+        }
+      })
+    })
   ]
 }

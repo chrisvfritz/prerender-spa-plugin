@@ -1,7 +1,8 @@
 var path = require('path')
 var webpack = require('webpack')
-var PrerenderSpaPlugin = require('prerender-spa-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+const PrerenderSpaPlugin = require('../../index.js')
+const Renderer = PrerenderSpaPlugin.PuppeteerRenderer
 
 module.exports = {
   entry: './src/main.js',
@@ -55,15 +56,17 @@ if (process.env.NODE_ENV === 'production') {
       filename: path.resolve(__dirname, 'dist/index.html'),
       favicon: 'favicon.ico'
     }),
-    new PrerenderSpaPlugin(
-      // Absolute path to compiled SPA
-      path.resolve(__dirname, './dist'),
-      // List of routes to prerender
-      [ '/', '/about', '/contact' ],
-      {
-        // options
-      }
-    )
+    new PrerenderSpaPlugin({
+      staticDir: path.join(__dirname, 'dist'),
+      outputDir: path.join(__dirname, 'prerendered'),
+      routes: [ '/', '/about', '/contact' ],
+
+      renderer: new Renderer({
+        inject: {
+          foo: 'bar'
+        }
+      })
+    })
   ])
 } else {
   // NODE_ENV === 'development'

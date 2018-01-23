@@ -1,16 +1,19 @@
 const fs = require('fs')
 const path = require('path')
 const mkdirp = require('mkdirp-promise')
-const Prerenderer = require('prerenderer')
-const PuppeteerRenderer = require('./puppeteer-renderer')
+const Prerenderer = require('@prerenderer/prerenderer')
+const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
 
 function PrerenderSPAPlugin (...args) {
+  const rendererOptions = {} // Primarily for backwards-compatibility.
+
   // Normal args object.
   if (args.length === 1) {
     this._options = args[0] || {}
 
-  // Backwards-compatibility with prerender-spa-plugin
+  // Backwards-compatibility with v2
   } else {
+    console.warn("[prerender-spa-plugin] You appear to be using the v2 argument-based configuration options. It's recommended that you migrate to the clearer object-based configuration system.\nCheck the documentation for more information.")
     let staticDir, routes
 
     args.forEach(arg => {
@@ -23,36 +26,58 @@ function PrerenderSPAPlugin (...args) {
     routes ? this._options.routes = routes : null
   }
 
-  if (!this.options) this.options = {}
+  if (!this._options) this._options = {}
+
+  // Backwards compatiblity with v2.
+  if (this._options.captureAfterDocumentEvent) {
+    console.warn('[prerender-spa-plugin] captureAfterDocumentEvent has been renamed to renderAfterDocumentEvent and should be moved to the renderer options.')
+    rendererOptions.renderAfterDocumentEvent = this._options.captureAfterDocumentEvent
+  }
+
+  if (this._options.captureAfterDocumentEvent) {
+    console.warn('[prerender-spa-plugin] captureAfterElementExists has been renamed to renderAfterElementExists and should be moved to the renderer options.')
+    rendererOptions.renderAfterElementExists = this._options.captureAfterElementExists
+  }
+
+  if (this._options.captureAfterTime) {
+    console.warn('[prerender-spa-plugin] captureAfterTime has been renamed to renderAfterTime and should be moved to the renderer options.')
+    rendererOptions.renderAfterTime = this._options.captureAfterTime
+  }
+
   this._options.server = this._options.server || {}
   this._options.renderer = this._options.renderer || new PuppeteerRenderer({
-    headless: true
+    headless: true,
+    ...rendererOptions
   })
+
+  if (this._options.postProcessHtml) {
+    console.warn('[prerender-spa-plugin] postProcessHtml should be migrated to postProcess! Consult the documentation for more information.')
+  }
 }
 
 PrerenderSPAPlugin.prototype.apply = function (compiler) {
   compiler.plugin('after-emit', (compilation, done) => {
-    // For backwards-compatibility with prerender-spa-plugin
-    if (!this.routes && this.paths) this.routes = this.paths
-
     const PrerendererInstance = new Prerenderer(this._options)
 
     PrerendererInstance.initialize()
     .then(() => {
       return PrerendererInstance.renderRoutes(this._options.routes || [])
     })
-    .then(renderedRoutes => {
-      const {route, html} = renderedRoutes
+    // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
+    .then(renderedRoutes => this._options.postProcessHtml
+      ? renderedRoutes.map(renderedRoute => {
+        const processed = this._options.postProcessHtml(renderedRoute)
+        if (typeof processed === 'string') renderedRoute.html = processed
+        else renderedRoute = processed
 
-      if (this._options.postProcessHtml) {
-        renderedRoutes.html = this._options.postProcessHtml({
-          html,
-          route
-        })
-      }
-
-      return renderedRoutes
-    })
+        return renderedRoute
+      })
+      : renderedRoutes
+    )
+    .then(renderedRoutes => this._options.postProcess
+      ? renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute))
+      : renderedRoutes
+    )
     .then(processedRoutes => {
       const promises = Promise.all(processedRoutes.map(processedRoute => {
         const outputDir = path.join(this._options.outputDir || this._options.staticDir, processedRoute.route)
@@ -62,7 +87,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
         .then(() => {
           return new Promise((resolve, reject) => {
             fs.writeFile(outputFile, processedRoute.html.trim(), err => {
-              if (err) reject(`[Prerender-SPA-Plugin] Unable to write rendered route to file "${outputFile}" \n ${err}`)
+              if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputFile}" \n ${err}.`)
             })
 
             resolve()
@@ -70,10 +95,10 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
         })
         .catch(err => {
           if (typeof err === 'string') {
-            err = `[Prerender-SPA-Plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`
+            err = `[prerender-spa-plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`
           }
 
-          setTimeout(function () { throw err })
+          throw err
         })
       }))
 
@@ -85,15 +110,12 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
     })
     .catch(err => {
       PrerendererInstance.destroy()
-      console.error('[Prerender-SPA-Plugin] Unable to prerender all routes!')
-      setTimeout(function () { throw err })
+      console.error('[prerender-spa-plugin] Unable to prerender all routes!')
+      console.error(err)
     })
   })
 }
 
-PrerenderSPAPlugin.BrowserRenderer = Prerenderer.BrowserRenderer
-PrerenderSPAPlugin.ChromeRenderer = Prerenderer.ChromeRenderer
-PrerenderSPAPlugin.JSDOMRenderer = Prerenderer.JSDOMRenderer
 PrerenderSPAPlugin.PuppeteerRenderer = PuppeteerRenderer
 
 module.exports = PrerenderSPAPlugin
