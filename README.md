@@ -63,10 +63,71 @@ module.exports = {
     new PrerenderSPAPlugin({
       // Required - The path to the webpack-outputted app to prerender.
       staticDir: path.join(__dirname, 'dist'),
+
+      // Optional - The path your rendered app should be output to.
+      // (Defaults to staticDir.)
+      outputDir: path.join(__dirname, 'prerendered'),
+
+      // Optional - The location of index.html
+      indexPath: path.join(__dirname, 'dist', 'index.html'),
+
       // Required - Routes to render.
       routes: [ '/', '/about', '/some/deep/nested/route' ],
 
-      renderer: new Renderer()
+      // Optional - Allows you to customize the HTML and output path before
+      // writing the rendered contents to a file.
+      // renderedRoute can be modified and it or an equivelant should be returned.
+      // renderedRoute format:
+      // {
+      //   route: String, // Where the output file will end up (relative to outputDir) 
+      //   originalRoute: String, // The route that was passed into the renderer, before redirects.
+      //   html: String // The rendered HTML for this route.
+      // }
+      postProcess (renderedRoute) {
+        // Ignore any redirects.
+        renderedRoute.path = renderedRoute.originalPath
+        // Basic whitespace removal. (Don't use this in production.)
+        renderedRoute.html = renderedRoute.html.split(/>[\s]+</gmi).join('><')
+
+        return renderedRoute
+      },
+
+      // Server configuration options.
+      server: {
+        // Normally a free port is autodetected, but feel free to set this if needed.
+        port: 8001
+      },
+
+      // The actual renderer to use. (Feel free to write your own)
+      // Available renderers: https://github.com/Tribex/prerenderer/tree/master/renderers
+      renderer: new Renderer({
+        // Optional - The name of the property to add to the window object with the contents of `inject`.
+        injectProperty: '__PRERENDER_INJECTED',
+        // Optional - Any values you'd like your app to have access to via `window.injectProperty`.
+        inject: {
+          foo: 'bar'
+        },
+
+        // Optional - defaults to 0, no limit.
+        // Routes are rendered asynchronously.
+        // Use this to limit the number of routes rendered in paralell.
+        maxConcurrentRoutes: 4,
+
+        // Optional - Wait to render until the specified event is dispatched on the document.
+        // eg, with `document.dispatchEvent(new Event('custom-render-trigger'))`
+        renderAfterDocumentEvent: 'custom-render-trigger',
+
+        // Optional - Wait to render until the specified element is detected using `document.querySelector`
+        renderAfterElementExists: 'my-app-element',
+
+        // Optional - Wait to render until a certain amount of time has passed. 
+        // NOT RECOMMENDED
+        renderAfterTime: 5000 // Wait 5 seconds.
+
+        // Other puppeteer options.
+        // (See here: https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions)
+        headless: false // Display the browser window when rendering. Useful for debugging.
+      })
     })
   ]
 }
@@ -161,8 +222,6 @@ module.exports = {
 - The default renderer is no longer PhantomJS. It has been replaced with [puppeteer](https://github.com/GoogleChrome/puppeteer). It is fairly simple to develop your own renderer as well. An alternate [jsdom](https://github.com/tmpvar/jsdom)-based renderer is available at [@prerenderer/renderer-jsdom](https://www.npmjs.com/package/@prerenderer/renderer-jsdom).
 - `prerender-spa-plugin` is now based on [prerenderer](https://github.com/Tribex/prerenderer). Accordingly, most bugs should be reported in that repository.
 
-Now, if you're not familiar with the concept of *prerendering*, you might predictably ask...
-
 ## What is Prerendering?
 
 Recently, SSR (Server Side Rendering) has taken the JavaScript front-end world by storm. The fact that you can now render your sites and apps on the server before sending them to your clients is an absolutely *revolutionary* idea (and totally not what everyone was doing before JS client-side apps got popular in the first place...)
@@ -177,12 +236,12 @@ In the interest of transparency, there are some use-cases where prerendering mig
 - **Dynamic Content** - If your render routes that have content that's specific to the user viewing it or other dynamic sources, you should make sure you have placeholder components that can display until the dynamic content loads on the client-side. Otherwise it might be a tad weird.
 
 ## Available Renderers
-- `@prerenderer/renderer-jsdom` - Uses [jsdom](https://npmjs.com/package/jsdom). Extremely fast, but unreliable and cannot handle advanced usages. May not work with all front-end frameworks and apps.
 - `@prerenderer/renderer-puppeteer` - Uses [puppeteer](https://github.com/GoogleChrome/puppeteer) to render pages in headless Chrome.
+- `@prerenderer/renderer-jsdom` - Uses [jsdom](https://npmjs.com/package/jsdom). Extremely fast, but unreliable and cannot handle advanced usages. May not work with all front-end frameworks and apps.
 
 ### Which renderer should I use?
 
-**Use `@prerenderer/renderer-puppeteer` if:** You're prerendering up to a couple hundred pages (bye-bye RAM!).
+**Use `@prerenderer/renderer-puppeteer` if:** You're prerendering up to a couple hundred pages and want accurate results (bye-bye RAM!).
 
 **Use `@prerenderer/renderer-jsdom` if:** You need to prerender thousands upon thousands of pages, but quality isn't all that important, and you're willing to work around issues for more advanced cases. (Programmatic SVG support, etc.)
 
@@ -208,17 +267,6 @@ In the interest of transparency, there are some use-cases where prerendering mig
 
 ---
 
-### `@prerenderer/renderer-jsdom` options
-
-| Option                   | Type                   | Required? | Default                  | Description                                                                                                                                                                                         |
-|--------------------------|------------------------|-----------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| maxConcurrentRoutes      | Number                 | No        | 0 (No limit)             | The number of routes allowed to be rendered at the same time. Useful for breaking down massive batches of routes into smaller chunks.                                                               |
-| inject                   | Object                 | No        | None                     | An object to inject into the global scope of the rendered page before it finishes loading. Must be `JSON.stringifiy`-able. The property injected to is `window['__PRERENDER_INJECTED']` by default. |
-| injectProperty           | String                 | No        | `__PRERENDER_INJECTED` | The property to mount `inject` to during rendering.                                                                                                                                                 |
-| renderAfterDocumentEvent | String                 | No        | None                     | Wait to render until the specified event is fired on the document. (You can fire an event like so: `document.dispatchEvent(new Event('custom-render-trigger'))`                                     |
-| renderAfterElementExists | String (Selector)      | No        | None                     | Wait to render until the specified element is detected using `document.querySelector`                                                                                                               |
-| renderAfterTime          | Integer (Milliseconds) | No        | None                     | Wait to render until a certain amount of time has passed.                                                                                                                                           |
-
 ### `@prerenderer/renderer-puppeteer` options
 
 | Option                                                                                                                | Type                   | Required? | Default                | Description                                                                                                                                                                                         |
@@ -232,6 +280,17 @@ In the interest of transparency, there are some use-cases where prerendering mig
 | [[Puppeteer Launch Options]](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions) | ?                      | No        | None                   | Any additional options will be passed to `puppeteer.launch()`, such as `headless: false`.                                                                                                                                        |
 
 ---
+
+### `@prerenderer/renderer-jsdom` options
+
+| Option                   | Type                   | Required? | Default                  | Description                                                                                                                                                                                         |
+|--------------------------|------------------------|-----------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| maxConcurrentRoutes      | Number                 | No        | 0 (No limit)             | The number of routes allowed to be rendered at the same time. Useful for breaking down massive batches of routes into smaller chunks.                                                               |
+| inject                   | Object                 | No        | None                     | An object to inject into the global scope of the rendered page before it finishes loading. Must be `JSON.stringifiy`-able. The property injected to is `window['__PRERENDER_INJECTED']` by default. |
+| injectProperty           | String                 | No        | `__PRERENDER_INJECTED` | The property to mount `inject` to during rendering.                                                                                                                                                 |
+| renderAfterDocumentEvent | String                 | No        | None                     | Wait to render until the specified event is fired on the document. (You can fire an event like so: `document.dispatchEvent(new Event('custom-render-trigger'))`                                     |
+| renderAfterElementExists | String (Selector)      | No        | None                     | Wait to render until the specified element is detected using `document.querySelector`                                                                                                               |
+| renderAfterTime          | Integer (Milliseconds) | No        | None                     | Wait to render until a certain amount of time has passed.                                                                                                                                           |
 
 ## Tips & Troubleshooting
 
