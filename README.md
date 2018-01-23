@@ -26,12 +26,9 @@
 </div>
 
 ## About prerender-spa-plugin
-:construction: Note: This is the work-in-progress v3 version of `prerender-spa-plugin`. If you're looking for the stable version, head over to the [master branch](https://github.com/chrisvfritz/prerender-spa-plugin/tree/master).
+**:construction: Note: This is the work-in-progress v3 version of `prerender-spa-plugin`. If you're looking for the stable version, head over to the [master branch](https://github.com/chrisvfritz/prerender-spa-plugin/tree/master).**
 
 The goal of this plugin is to provide a simple prerendering solution that is easily extensible and usable for any site or single-page-app built with webpack.
-
-It's implemented as a webpack wrapper for [prerenderer](https://github.com/tribex/prerenderer).
-For more up-to-date and complete documentation, see that repository.
 
 Plugins for other task runners and build systems are planned.
 
@@ -152,7 +149,17 @@ module.exports = {
 
 ### Additional Changes
 - It is no longer possible to use multiple `renderAfterX` (`captureAfterX`) options at the same time. Only one may be selected. The reason for this removal is to prevent ambiguity.
-- 
+- The recommended configuration format has changed from `new PrerenderSPAPlugin(staticDir: String, routes: Array<String>, config: Object)` to 
+  ```javascript
+  new PrerenderSPAPlugin({
+    staticDir: String,
+    routes: String,
+    ...
+  })
+  ```
+  in order to reduce ambiguity. The old format still works for the time being.
+- The default renderer is no longer PhantomJS. It has been replaced with [puppeteer](https://github.com/GoogleChrome/puppeteer). It is fairly simple to develop your own renderer as well. An alternate [jsdom](https://github.com/tmpvar/jsdom)-based renderer is available at [@prerenderer/renderer-jsdom](https://www.npmjs.com/package/@prerenderer/renderer-jsdom).
+- `prerender-spa-plugin` is now based on [prerenderer](https://github.com/Tribex/prerenderer). Accordingly, most bugs should be reported in that repository.
 
 Now, if you're not familiar with the concept of *prerendering*, you might predictably ask...
 
