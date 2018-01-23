@@ -24,6 +24,7 @@ function PrerenderSPAPlugin() {
 
     // Backwards-compatibility with v2
   } else {
+    console.warn("[prerender-spa-plugin] You appear to be using the v2 argument-based configuration options. It's recommended that you migrate to the clearer object-based configuration system.\nCheck the documentation for more information.");
     var staticDir = void 0,
         routes = void 0;
 
@@ -39,17 +40,17 @@ function PrerenderSPAPlugin() {
 
   // Backwards compatiblity with v2.
   if (this._options.captureAfterDocumentEvent) {
-    console.warn('[Prerender-SPA-Plugin] captureAfterDocumentEvent has been renamed to renderAfterDocumentEvent and should be moved to the renderer options.');
+    console.warn('[prerender-spa-plugin] captureAfterDocumentEvent has been renamed to renderAfterDocumentEvent and should be moved to the renderer options.');
     rendererOptions.renderAfterDocumentEvent = this._options.captureAfterDocumentEvent;
   }
 
   if (this._options.captureAfterDocumentEvent) {
-    console.warn('[Prerender-SPA-Plugin] captureAfterElementExists has been renamed to renderAfterElementExists and should be moved to the renderer options.');
+    console.warn('[prerender-spa-plugin] captureAfterElementExists has been renamed to renderAfterElementExists and should be moved to the renderer options.');
     rendererOptions.renderAfterElementExists = this._options.captureAfterElementExists;
   }
 
   if (this._options.captureAfterTime) {
-    console.warn('[Prerender-SPA-Plugin] captureAfterTime has been renamed to renderAfterTime and should be moved to the renderer options.');
+    console.warn('[prerender-spa-plugin] captureAfterTime has been renamed to renderAfterTime and should be moved to the renderer options.');
     rendererOptions.renderAfterTime = this._options.captureAfterTime;
   }
 
@@ -59,7 +60,7 @@ function PrerenderSPAPlugin() {
   }, rendererOptions));
 
   if (this._options.postProcessHtml) {
-    console.warn('[Prerender-SPA-Plugin] postProcessHtml should be migrated to postProcess! Consult the documentation for more information.');
+    console.warn('[prerender-spa-plugin] postProcessHtml should be migrated to postProcess! Consult the documentation for more information.');
   }
 }
 
@@ -92,14 +93,14 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
         return mkdirp(outputDir).then(function () {
           return new Promise(function (resolve, reject) {
             fs.writeFile(outputFile, processedRoute.html.trim(), function (err) {
-              if (err) reject(`[Prerender-SPA-Plugin] Unable to write rendered route to file "${outputFile}" \n ${err}.`);
+              if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputFile}" \n ${err}.`);
             });
 
             resolve();
           });
         }).catch(function (err) {
           if (typeof err === 'string') {
-            err = `[Prerender-SPA-Plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`;
+            err = `[prerender-spa-plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`;
           }
 
           throw err;
@@ -112,8 +113,8 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       done();
     }).catch(function (err) {
       PrerendererInstance.destroy();
-      console.error('[Prerender-SPA-Plugin] Unable to prerender all routes!');
-      throw err;
+      console.error('[prerender-spa-plugin] Unable to prerender all routes!');
+      console.error(err);
     });
   });
 };
