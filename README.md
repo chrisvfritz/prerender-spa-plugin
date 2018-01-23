@@ -9,6 +9,8 @@
 
 <p align="center"><em>highly configurable, framework-agnostic static site generation for SPAs</em></p>
 
+**:tada: `prerender-spa-plugin` v3 is in progress! Feeling adventerous? Go [take a look!](https://github.com/chrisvfritz/prerender-spa-plugin/tree/v3)**
+
 ## Prerendering vs Server-Side Rendering (SSR)
 
 SSR is, like, _super_ hot right now. Personally though, I think it's overrated. It can significantly increase the complexity of your application and for many use cases, prerendering is a simpler and more appropriate solution. These are the top 2 problems people are typically trying to solve with either of these strategies:
