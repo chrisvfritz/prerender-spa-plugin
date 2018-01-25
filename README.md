@@ -232,4 +232,13 @@ npm rebuild
 
 ---
 
+## Alternatives
+
+- [react-snap](https://github.com/stereobooster/react-snap) - Zero-configuration framework-agnostic prerendering. Does not depend on webpack. Handles a variety of edge-cases.
+- [snapshotify](https://github.com/errorception/snapshotify) - An experimental prerenderer that performes a number of speed optimizations.
+- [presite](https://github.com/egoist/presite) - Minimal-configuration framework-agnostic prerendering.
+- [prerenderer](https://github.com/tribex/prerenderer) - Pluggable prerendering library that [prerender-spa-plugin v3+](https://github.com/chrisvfritz/prerender-spa-plugin/tree/v3) is based on.
+
+---
+
 **MAINTAINERS WANTED**: Ahh, so much open source! With my current workload, I simply don't have time to give this project the attention it deserves. If you're interested in becoming a maintainer, please [tweet me](https://twitter.com/chrisvfritz) to let me know!
