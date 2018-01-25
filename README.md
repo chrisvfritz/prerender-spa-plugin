@@ -3,7 +3,7 @@
   <em>Flexible, framework-agnostic static site generation for sites and SPAs built with webpack.</em>
 </p>
 
-<p align="center"><img width="300" src="/assets/logo.png?raw=true"></p>
+<p align="center"><img width="450" src="/assets/logo.png?raw=true"></p>
 
 ---
 
@@ -345,6 +345,14 @@ Either way, there will not be any unnecessary styles inside JS.
 - Whatever client-side rendering library you're using should be able to at least replace any server-rendered content or diff with it.
   - For **Vue.js 1** use [`replace: false`](http://vuejs.org/api/#replace) on root components.
   - For **Vue.js 2**  Ensure your root component has the same id as the prerendered element it's replacing. Otherwise you'll end up with duplicated content.
+
+
+## Alternatives
+
+- [react-snap](https://github.com/stereobooster/react-snap) - Zero-configuration framework-agnostic prerendering. Does not depend on webpack. Handles a variety of edge-cases.
+- [snapshotify](https://github.com/errorception/snapshotify) - An experimental prerenderer that performes a number of speed optimizations.
+- [presite](https://github.com/egoist/presite) - Minimal-configuration framework-agnostic prerendering.
+- [prerenderer](https://github.com/tribex/prerenderer) - Pluggable prerendering library that `prerender-spa-plugin` `v3+` is based on.
 
 ## License (MIT)
 
