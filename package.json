@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "mkdirp-promise": "^5.0.1",
-    "@prerenderer/prerenderer": "^0.6.0",
+    "@prerenderer/prerenderer": "^0.6.4",
     "@prerenderer/renderer-puppeteer": "^0.1.0"
   },
   "devDependencies": {
