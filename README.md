@@ -13,7 +13,7 @@
 
 ## Prerendering vs Server-Side Rendering (SSR)
 
-SSR is, like, _super_ hot right now. Personally though, I think it's overrated. It can significantly increase the complexity of your application and for many use cases, prerendering is a simpler and more appropriate solution. These are the top 2 problems people are typically trying to solve with either of these strategies:
+SSR is, like, _super_ hot right now. Personally though, I think it's overrated. It can significantly increase the complexity of your application and for many use cases, prerendering is a simpler and more appropriate solution. These are the top 3 problems people are typically trying to solve with either of these strategies:
 
 1. __SEO__: When content is loaded asynchronously, crawlers won't wait for it to be loaded.
 2. __Slow clients__: When users are accessing your site on a bad Internet connection, you want to be able to show them content as soon as possible, even before all your JS is downloaded and parsed.
