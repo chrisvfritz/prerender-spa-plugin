@@ -8,6 +8,9 @@ var mkdirp = require('mkdirp-promise');
 var Prerenderer = require('@prerenderer/prerenderer');
 var PuppeteerRenderer = require('@prerenderer/renderer-puppeteer');
 
+var _require = require('html-minifier'),
+    minify = _require.minify;
+
 function PrerenderSPAPlugin() {
   var _this = this;
 
@@ -85,6 +88,13 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       return _this2._options.postProcess ? renderedRoutes.map(function (renderedRoute) {
         return _this2._options.postProcess(renderedRoute);
       }) : renderedRoutes;
+    }).then(function (renderedRoutes) {
+      if (!_this2._options.minify) return renderedRoutes;
+
+      return renderedRoutes.map(function (route) {
+        route.html = minify(route.html, _this2._options.minify);
+        return route;
+      });
     }).then(function (processedRoutes) {
       var promises = Promise.all(processedRoutes.map(function (processedRoute) {
         var outputDir = path.join(_this2._options.outputDir || _this2._options.staticDir, processedRoute.route);
