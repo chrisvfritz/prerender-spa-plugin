@@ -1,0 +1,12 @@
+{
+  "name": "prerender-spa-plugin-example-vanilla-simple",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "build": "webpack --progress --hide-modules"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.4.1",
+    "webpack": "^3.11.0"
+  }
+}

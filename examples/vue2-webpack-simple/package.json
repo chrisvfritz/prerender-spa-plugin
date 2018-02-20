@@ -1,16 +1,20 @@
 {
-  "name": "prerender-spa-plugin-example-vue2-webpack-router",
+  "name": "prerender-spa-plugin-example-vue2-webpack-simple",
   "version": "1.0.0",
+  "author": "Joshua Bemenderfer <tribex10@gmail.com>",
   "private": true,
-  "author": "Drew Lustro <drewlustro@gmail.com>",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "vue": "^2.5.11",
-    "vue-router": "^3.0.1"
+    "vue": "^2.5.11"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -19,9 +23,8 @@
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
-    "html-webpack-plugin": "^2.30.1",
     "vue-loader": "^13.0.5",
-    "vue-template-compiler": "^2.5.13",
+    "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   }

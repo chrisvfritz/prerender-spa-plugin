@@ -1,10 +1,6 @@
-# Vue.js 2.0 + vue-router Prerender SPA Example
+# Ejected Angular CLI App - Prerender SPA Example
 
-Demonstrates usage of Vuejs 2.0 with Vue Router and Webpack 3. Build will generate 3 static routes at the following paths:
-
-- `/`
-- `/about`
-- `/contact`
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.0.
 
 ## Build
 
@@ -13,15 +9,15 @@ npm install
 npm run build
 ```
 
-Now check the new `dist` directory for your prerendered static files!
+Now check the new `build` directory for your prerendered static files!
 
 To view the rendered files, install [http-server](https://www.npmjs.com/package/http-server) (`npm install -g http-server`) if you haven't already and run it in the dist directory.
 
-Now visit the following routes in your browser (note the trailing slash):
+Now visit the following route in your browser (note the trailing slash):
 
 - [http://localhost:8000/](http://localhost:8000/)
-- [http://localhost:8000/about/](http://localhost:8000/about/)
-- [http://localhost:8000/contact/](http://localhost:8000/contact/)
+
+If all went well, it should load without JavaScript.
 
 ## Development
 
@@ -31,5 +27,5 @@ If you're using a router or have more than one page to prerender, edit the `rout
 
 ```bash
 npm install
-npm run dev
+npm start
 ```

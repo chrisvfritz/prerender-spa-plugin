@@ -3,6 +3,7 @@ const path = require('path')
 const mkdirp = require('mkdirp-promise')
 const Prerenderer = require('@prerenderer/prerenderer')
 const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
+const { minify } = require('html-minifier')
 
 function PrerenderSPAPlugin (...args) {
   const rendererOptions = {} // Primarily for backwards-compatibility.
@@ -78,6 +79,14 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       ? renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute))
       : renderedRoutes
     )
+    .then(renderedRoutes => {
+      if (!this._options.minify) return renderedRoutes
+
+      return renderedRoutes.map(route => {
+        route.html = minify(route.html, this._options.minify)
+        return route
+      })
+    })
     .then(processedRoutes => {
       const promises = Promise.all(processedRoutes.map(processedRoute => {
         const outputDir = path.join(this._options.outputDir || this._options.staticDir, processedRoute.route)

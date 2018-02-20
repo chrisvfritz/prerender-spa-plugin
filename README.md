@@ -32,7 +32,16 @@ The goal of this plugin is to provide a simple prerendering solution that is eas
 
 Plugins for other task runners and build systems are planned.
 
-## Example Usage (`webpack.config.js`)
+## Examples
+Framework-specific examples can be found in the `examples/` directory.
+
+- [Vanilla JS](tree/v3/examples/vanilla-simple)
+- [Vue.js 2 Simple](tree/v3/examples/vue2-webpack-simple)
+- [Vue.js 2 Router](tree/v3/examples/vue2-webpack-router)
+- [React (Create React App + Eject)](tree/v3/examples/create-react-app-eject)
+- [Angular (Angular CLI + Eject)](tree/v3/examples/angular-cli-eject)
+
+### Basic Usage (`webpack.config.js`)
 ```js
 const path = require('path')
 const PrerenderSPAPlugin = require('prerender-spa-plugin')
@@ -50,7 +59,7 @@ module.exports = {
 }
 ```
 
-## Advanced Usage (`webpack.config.js`)
+### Advanced Usage (`webpack.config.js`)
 
 ```js
 const path = require('path')
@@ -79,7 +88,7 @@ module.exports = {
       // renderedRoute can be modified and it or an equivelant should be returned.
       // renderedRoute format:
       // {
-      //   route: String, // Where the output file will end up (relative to outputDir) 
+      //   route: String, // Where the output file will end up (relative to outputDir)
       //   originalRoute: String, // The route that was passed into the renderer, before redirects.
       //   html: String // The rendered HTML for this route.
       // }
@@ -90,6 +99,17 @@ module.exports = {
         renderedRoute.html = renderedRoute.html.split(/>[\s]+</gmi).join('><')
 
         return renderedRoute
+      },
+
+      // Optional - Uses html-minifier (https://github.com/kangax/html-minifier)
+      // To minify the resulting HTML.
+      // Option reference: https://github.com/kangax/html-minifier#options-quick-reference
+      minify: {
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        decodeEntities: true,
+        keepClosingSlash: true,
+        sortAttributes: true
       },
 
       // Server configuration options.
@@ -120,7 +140,7 @@ module.exports = {
         // Optional - Wait to render until the specified element is detected using `document.querySelector`
         renderAfterElementExists: 'my-app-element',
 
-        // Optional - Wait to render until a certain amount of time has passed. 
+        // Optional - Wait to render until a certain amount of time has passed.
         // NOT RECOMMENDED
         renderAfterTime: 5000 // Wait 5 seconds.
 
@@ -133,7 +153,7 @@ module.exports = {
 }
 ```
 
-## v2.x Compability
+### v2.x Compability
 Most usages of `prerender-spa-plugin` v2.x should be compatible with v3.x.
 The exception being advanced configuration options that controlled PhantomJS. These have been replaced by pluggable renderers with their own specific configuration options.
 
@@ -174,7 +194,7 @@ module.exports = {
         // produce unreliable results when relying on network
         // communication or other operations with highly variable timing.
         captureAfterTime: 5000,
-        
+
         // path of index file. By default it's index.html in static root.
         indexPath: path.resolve('/dist/path/to/index.html'),
 
@@ -208,9 +228,9 @@ module.exports = {
 }
 ```
 
-### Additional Changes
+#### Additional Changes
 - It is no longer possible to use multiple `renderAfterX` (`captureAfterX`) options at the same time. Only one may be selected. The reason for this removal is to prevent ambiguity.
-- The recommended configuration format has changed from `new PrerenderSPAPlugin(staticDir: String, routes: Array<String>, config: Object)` to 
+- The recommended configuration format has changed from `new PrerenderSPAPlugin(staticDir: String, routes: Array<String>, config: Object)` to
   ```javascript
   new PrerenderSPAPlugin({
     staticDir: String,
@@ -249,21 +269,21 @@ In the interest of transparency, there are some use-cases where prerendering mig
 
 ### Plugin Options
 
-| Option      | Type                                      | Required? | Default                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|-------------|-------------------------------------------|-----------|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| staticDir   | String                                    | Yes       | None                      | The root path to serve your app from.                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ouputDir    | String                                    | No        | None                      | Where the prerendered pages should be output. If not set, defaults to staticDir.                                                                                                                                                                                                                                                                                                                                                                     |
-| indexPath   | String                                    | No        | `staticDir/index.html`    | The index file to fall back on for SPAs.                                                                                                                                                                                                                                                                                                                                                                                                             |
-| postProcess | Function(Object context): Object          | No        | None                      | Passes in an object in the format ```javascript {   route: String, // The prerendered route, after following redirects.   originalRoute: String, // The original route passed, before redirects.   html: String // The resulting HTML for the route. } ```  You can modify `html` to change what gets written to the prerendered files, or modify `route` to change the output location. (Make sure to return the object once you're done with it.)  |
-| server      | Object                                    | No        | None                      | App server configuration options (See below)                                                                                                                                                                                                                                                                                                                                                                                                         |
-| renderer    | Renderer Instance or Configuration Object | No        | `new PuppeteerRenderer()` | The renderer you'd like to use to prerender the app. It's recommended that you specify this, but if not it will default to `@prerenderer/renderer-puppeteer`.                                                                                                                                                                                                                                                                                        |
+| Option      | Type                                      | Required? | Default                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|-------------|-------------------------------------------|-----------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| staticDir   | String                                    | Yes       | None                      | The root path to serve your app from.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ouputDir    | String                                    | No        | None                      | Where the prerendered pages should be output. If not set, defaults to staticDir.                                                                                                                                                                                                                                                                                                                                                                    |
+| indexPath   | String                                    | No        | `staticDir/index.html`    | The index file to fall back on for SPAs.                                                                                                                                                                                                                                                                                                                                                                                                            |
+| postProcess | Function(Object context): Object          | No        | None                      | Passes in an object in the format ```javascript {   route: String, // The prerendered route, after following redirects.   originalRoute: String, // The original route passed, before redirects.   html: String // The resulting HTML for the route. } ```  You can modify `html` to change what gets written to the prerendered files, or modify `route` to change the output location. (Make sure to return the object once you're done with it.) |
+| minify      | Object                                    | No        | None                      | Minifies the resulting HTML using [html-minifier](https://github.com/kangax/html-minifier). Full list of options available [here](https://github.com/kangax/html-minifier#options-quick-reference).                                                                                                                                                                                                                                                 |
+| server      | Object                                    | No        | None                      | App server configuration options (See below)                                                                                                                                                                                                                                                                                                                                                                                                        |
+| renderer    | Renderer Instance or Configuration Object | No        | `new PuppeteerRenderer()` | The renderer you'd like to use to prerender the app. It's recommended that you specify this, but if not it will default to `@prerenderer/renderer-puppeteer`.                                                                                                                                                                                                                                                                                       |
+
 #### Server Options
 
 | Option | Type    | Required? | Default                    | Description                            |
 |--------|---------|-----------|----------------------------|----------------------------------------|
 | port   | Integer | No        | First free port after 8000 | The port for the app server to run on. |
-
----
 
 ---
 
@@ -291,6 +311,8 @@ In the interest of transparency, there are some use-cases where prerendering mig
 | renderAfterDocumentEvent | String                 | No        | None                     | Wait to render until the specified event is fired on the document. (You can fire an event like so: `document.dispatchEvent(new Event('custom-render-trigger'))`                                     |
 | renderAfterElementExists | String (Selector)      | No        | None                     | Wait to render until the specified element is detected using `document.querySelector`                                                                                                               |
 | renderAfterTime          | Integer (Milliseconds) | No        | None                     | Wait to render until a certain amount of time has passed.                                                                                                                                           |
+
+---
 
 ## Tips & Troubleshooting
 
@@ -346,6 +368,7 @@ Either way, there will not be any unnecessary styles inside JS.
   - For **Vue.js 1** use [`replace: false`](http://vuejs.org/api/#replace) on root components.
   - For **Vue.js 2**  Ensure your root component has the same id as the prerendered element it's replacing. Otherwise you'll end up with duplicated content.
 
+---
 
 ## Alternatives
 

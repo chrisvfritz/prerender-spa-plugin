@@ -1,10 +1,10 @@
-# Vue.js 2.0 + vue-router Prerender SPA Example
+# Vanilla JS - Prerender SPA Example
 
-Demonstrates usage of Vuejs 2.0 with Vue Router and Webpack 3. Build will generate 3 static routes at the following paths:
+Demonstrates usage of `prerender-spa-plugin` with Vanilla JS and Webpack 3. Build will generate 3 static routes at the following paths:
 
 - `/`
 - `/about`
-- `/contact`
+- `/some/deep/nested/route`
 
 ## Build
 
@@ -21,15 +21,12 @@ Now visit the following routes in your browser (note the trailing slash):
 
 - [http://localhost:8000/](http://localhost:8000/)
 - [http://localhost:8000/about/](http://localhost:8000/about/)
-- [http://localhost:8000/contact/](http://localhost:8000/contact/)
+- [http://localhost:8000/some/deep/nested/route/](http://localhost:8000/some/deep/nested/route/)
+
+You should notice that the TODOs are rendered and populated already.
 
 ## Development
 
 To edit the `prerender-spa-plugin` configuration, look for `new PrerenderSpaPlugin` in the plugins section of `webpack.config.js`.
 
 If you're using a router or have more than one page to prerender, edit the `routes` array under that config object.
-
-```bash
-npm install
-npm run dev
-```

@@ -4,9 +4,9 @@ import App from './App.vue'
 
 Vue.use(VueRouter)
 
-const Home = { template: '<div><h2>Home Page</h2></div>'}
-const About = { template: '<div><h2>About Page</h2></div>'}
-const Contact = { template: '<div><h2>Contact Page</h2></div>'}
+const Home = { template: '<div><h2>Home Page</h2></div>' }
+const About = { template: '<div><h2>About Page</h2></div>' }
+const Contact = { template: '<div><h2>Contact Page</h2></div>' }
 
 const routes = [
   { path: '/', component: Home },
@@ -22,5 +22,9 @@ const router = new VueRouter({
 new Vue({
   el: '#app',
   router,
-  render: h => h(App)
+  render: h => h(App),
+  mounted () {
+    // You'll need this for renderAfterDocumentEvent.
+    document.dispatchEvent(new Event('render-event'))
+  }
 })
