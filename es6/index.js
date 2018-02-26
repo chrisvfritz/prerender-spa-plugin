@@ -46,10 +46,7 @@ function PrerenderSPAPlugin (...args) {
   }
 
   this._options.server = this._options.server || {}
-  this._options.renderer = this._options.renderer || new PuppeteerRenderer({
-    headless: true,
-    ...rendererOptions
-  })
+  this._options.renderer = this._options.renderer || new PuppeteerRenderer(Object.assign({}, { headless: true }, rendererOptions))
 
   if (this._options.postProcessHtml) {
     console.warn('[prerender-spa-plugin] postProcessHtml should be migrated to postProcess! Consult the documentation for more information.')

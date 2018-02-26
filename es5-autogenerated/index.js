@@ -1,7 +1,5 @@
 'use strict';
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp-promise');
@@ -58,9 +56,7 @@ function PrerenderSPAPlugin() {
   }
 
   this._options.server = this._options.server || {};
-  this._options.renderer = this._options.renderer || new PuppeteerRenderer(_extends({
-    headless: true
-  }, rendererOptions));
+  this._options.renderer = this._options.renderer || new PuppeteerRenderer(Object.assign({}, { headless: true }, rendererOptions));
 
   if (this._options.postProcessHtml) {
     console.warn('[prerender-spa-plugin] postProcessHtml should be migrated to postProcess! Consult the documentation for more information.');
