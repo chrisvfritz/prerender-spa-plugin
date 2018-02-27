@@ -120,6 +120,9 @@ module.exports = {
         // embeds), which are not ideal for SEO and may introduce JS errors.
         navigationLocked: true,
 
+        // Specify the name of the rendered .html file
+        outputFile: 'index.html',
+
         // The options below expose configuration options for PhantomJS,
         // for the rare case that you need special settings for specific
         // systems or applications.
