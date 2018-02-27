@@ -83,6 +83,9 @@ module.exports = {
         // necessary. All synchronous scripts are already executed before
         // capturing the page content.
 
+        // You use Headless Chrome instead of PhantomJS
+        browser: 'chrome',
+
         // Wait until a specific event is fired on the document.
         captureAfterDocumentEvent: 'custom-post-render-event',
         // This is how you would trigger this example event:
@@ -98,6 +101,10 @@ module.exports = {
         // communication or other operations with highly variable timing.
         captureAfterTime: 5000,
 
+        // You can pass options to Headless Chrome. See here
+        // https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions
+        chromeOptions: {},
+
         // NOTE: You can even combine strategies if you like. For example,
         // if you only _sometimes_ want to wait for an event to fire, you
         // can create a timeout by combining captureAfterTime with
@@ -106,7 +113,7 @@ module.exports = {
 
         // Instead of loudly failing on JS errors (the default), ignore them.
         ignoreJSErrors: true,
-        
+
         // path of index file. By default it's index.html in static root.
         indexPath: path.resolve('/dist/path/to/index.html'),
 
@@ -131,13 +138,13 @@ module.exports = {
         phantomPageSettings: {
           loadImages: true
         },
-        
+
         // http://phantomjs.org/api/webpage/property/viewport-size.html
         phantomPageViewportSize: {
           width: 1280,
           height: 800
         },
-        
+
         // Manually transform the HTML for each page after prerendering,
         // for example to set the page title and metadata in edge cases
         // where you cannot handle this via your routing solution.
@@ -182,8 +189,8 @@ new HtmlWebpackPlugin({
 })
 ```
 
-### Tips 
- 
+### Tips
+
 If you have code that relies on the existence of `<body>` (and you almost certainly do), simply run it in a callback to the `DOMContentLoaded` event:
 
 ```js

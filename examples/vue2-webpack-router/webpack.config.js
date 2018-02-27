@@ -62,6 +62,7 @@ if (process.env.NODE_ENV === 'production') {
       [ '/', '/about', '/contact' ],
       {
         // options
+        browser: 'chrome'
       }
     )
   ])
