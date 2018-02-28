@@ -1,9 +1,9 @@
 {
   "name": "prerender-spa-plugin",
-  "version": "2.0.1",
-  "description": "Prerenders static HTML in a single-page application.",
+  "version": "3.0.0",
+  "description": "Prerenders static HTML in a single-page application. Based on the work of Chris Fritz (https://github.com/chrisvfritz/prerender-spa-plugin) and Fabio Crisci (https://github.com/en-japan-air/prerender-chrome-headless)",
   "main": "index.js",
-  "author": "Chris Fritz",
+  "author": "Maik Buchmeyer",
   "license": "MIT",
   "dependencies": {
     "core-js": "^2.4.1",
@@ -11,8 +11,8 @@
     "inert": "3.2.0",
     "lodash": "^4.13.1",
     "mkdirp": "0.5.1",
-    "phantomjs-prebuilt": "2.1.15",
-    "portfinder": "1.0.3"
+    "portfinder": "1.0.3",
+    "prerender-chrome-headless": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^2.5.1",
