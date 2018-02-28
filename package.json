@@ -1,6 +1,6 @@
 {
   "name": "prerender-spa-plugin",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Prerenders static HTML in a single-page application.",
   "main": "index.js",
   "author": "Chris Fritz",
@@ -11,7 +11,7 @@
     "inert": "3.2.0",
     "lodash": "^4.13.1",
     "mkdirp": "0.5.1",
-    "phantomjs-prebuilt": "2.1.8",
+    "phantomjs-prebuilt": "^2.1.16",
     "portfinder": "1.0.3"
   },
   "devDependencies": {
