@@ -26,7 +26,7 @@
 </div>
 
 ## About prerender-spa-plugin
-**:construction: Note: This is the work-in-progress v3 version of `prerender-spa-plugin`. If you're looking for the stable version, head over to the [master branch](https://github.com/chrisvfritz/prerender-spa-plugin/tree/master).**
+**:construction: Note: This is the v3-alpha version of `prerender-spa-plugin`. If you're looking for the stable version, head over to the [master branch](https://github.com/chrisvfritz/prerender-spa-plugin/tree/master).**
 
 The goal of this plugin is to provide a simple prerendering solution that is easily extensible and usable for any site or single-page-app built with webpack.
 
