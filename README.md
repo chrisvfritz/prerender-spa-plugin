@@ -284,6 +284,7 @@ In the interest of transparency, there are some use-cases where prerendering mig
 | Option | Type    | Required? | Default                    | Description                            |
 |--------|---------|-----------|----------------------------|----------------------------------------|
 | port   | Integer | No        | First free port after 8000 | The port for the app server to run on. |
+| proxy  | Object  | No        | No proxying                | Proxy configuration. Has the same signature as [webpack-dev-server](https://github.com/webpack/docs/wiki/webpack-dev-server#proxy) |
 
 ---
 
