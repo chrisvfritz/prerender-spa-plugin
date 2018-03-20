@@ -14,6 +14,8 @@ function PrerenderSPAPlugin() {
 
   var rendererOptions = {}; // Primarily for backwards-compatibility.
 
+  this._options = {};
+
   // Normal args object.
 
   for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -36,8 +38,6 @@ function PrerenderSPAPlugin() {
     staticDir ? this._options.staticDir = staticDir : null;
     routes ? this._options.routes = routes : null;
   }
-
-  if (!this._options) this._options = {};
 
   // Backwards compatiblity with v2.
   if (this._options.captureAfterDocumentEvent) {
@@ -120,7 +120,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
     }).catch(function (err) {
       PrerendererInstance.destroy();
       console.error('[prerender-spa-plugin] Unable to prerender all routes!');
-      console.error(err);
+      throw err;
     });
   });
 };

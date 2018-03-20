@@ -8,6 +8,8 @@ const { minify } = require('html-minifier')
 function PrerenderSPAPlugin (...args) {
   const rendererOptions = {} // Primarily for backwards-compatibility.
 
+  this._options = {}
+
   // Normal args object.
   if (args.length === 1) {
     this._options = args[0] || {}
@@ -26,8 +28,6 @@ function PrerenderSPAPlugin (...args) {
     staticDir ? this._options.staticDir = staticDir : null
     routes ? this._options.routes = routes : null
   }
-
-  if (!this._options) this._options = {}
 
   // Backwards compatiblity with v2.
   if (this._options.captureAfterDocumentEvent) {
@@ -117,7 +117,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
     .catch(err => {
       PrerendererInstance.destroy()
       console.error('[prerender-spa-plugin] Unable to prerender all routes!')
-      console.error(err)
+      throw err
     })
   })
 }
