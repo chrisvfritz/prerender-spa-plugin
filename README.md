@@ -9,8 +9,7 @@
 
 <p align="center"><em>highly configurable, framework-agnostic static site generation for SPAs</em></p>
 
-**:tada: `prerender-spa-plugin` v3 is now in beta! It replaces PhantomJS 
-with Puppeteer and adds a few new features. Go [take a look!](https://github.com/chrisvfritz/prerender-spa-plugin/tree/v3). It can be installed from npm with `npm install prerender-spa-plugin@next`**
+**:warning: `prerender-spa-plugin` 2.x is now deprecated in favor of 3.x, which is no longer based on PhantomJS. It is highly recommended that you upgrade to `prerender-spa-plugin 3.x`, which uses Puppeteer and adds a few new features. Ongoing development is happening in the `master` branch.**
 
 ## Prerendering vs Server-Side Rendering (SSR)
 
