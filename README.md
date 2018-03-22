@@ -3,7 +3,7 @@
   <em>Flexible, framework-agnostic static site generation for sites and SPAs built with webpack.</em>
 </p>
 
-<p align="center"><img width="200" src="/assets/logo.png?raw=true"></p>
+<p align="center"><img width="200" src="https://raw.githubusercontent.com/chrisvfritz/prerender-spa-plugin/master/assets/logo.png?raw=true"></p>
 
 ---
 
