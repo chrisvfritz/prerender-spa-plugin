@@ -1,4 +1,4 @@
-<p align="center"><img width="150" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/art/logo.png?raw=true"></p>
+<p align="center"><img width="150" src="https://github.com/chrisvfritz/prerender-spa-plugin/blob/v2/art/logo.png?raw=true"></p>
 
 <p align="center">
   <a href="https://badge.fury.io/js/prerender-spa-plugin"><img src="https://badge.fury.io/js/prerender-spa-plugin.svg" alt="npm version"></a>
