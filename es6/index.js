@@ -58,67 +58,67 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
     const PrerendererInstance = new Prerenderer(this._options)
 
     PrerendererInstance.initialize()
-    .then(() => {
-      return PrerendererInstance.renderRoutes(this._options.routes || [])
-    })
-    // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
-    .then(renderedRoutes => this._options.postProcessHtml
-      ? renderedRoutes.map(renderedRoute => {
-        const processed = this._options.postProcessHtml(renderedRoute)
-        if (typeof processed === 'string') renderedRoute.html = processed
-        else renderedRoute = processed
-
-        return renderedRoute
+      .then(() => {
+        return PrerendererInstance.renderRoutes(this._options.routes || [])
       })
-      : renderedRoutes
-    )
-    .then(renderedRoutes => this._options.postProcess
-      ? renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute))
-      : renderedRoutes
-    )
-    .then(renderedRoutes => {
-      if (!this._options.minify) return renderedRoutes
+      // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
+      .then(renderedRoutes => this._options.postProcessHtml
+        ? renderedRoutes.map(renderedRoute => {
+          const processed = this._options.postProcessHtml(renderedRoute)
+          if (typeof processed === 'string') renderedRoute.html = processed
+          else renderedRoute = processed
 
-      return renderedRoutes.map(route => {
-        route.html = minify(route.html, this._options.minify)
-        return route
+          return renderedRoute
+        })
+        : renderedRoutes
+      )
+      .then(renderedRoutes => this._options.postProcess
+        ? renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute))
+        : renderedRoutes
+      )
+      .then(renderedRoutes => {
+        if (!this._options.minify) return renderedRoutes
+
+        return renderedRoutes.map(route => {
+          route.html = minify(route.html, this._options.minify)
+          return route
+        })
       })
-    })
-    .then(processedRoutes => {
-      const promises = Promise.all(processedRoutes.map(processedRoute => {
-        const outputDir = path.join(this._options.outputDir || this._options.staticDir, processedRoute.route)
-        const outputFile = path.join(outputDir, 'index.html')
+      .then(processedRoutes => {
+        const promises = Promise.all(processedRoutes.map(processedRoute => {
+          const outputDir = path.join(this._options.outputDir || this._options.staticDir, processedRoute.route)
+          const outputFile = path.join(outputDir, 'index.html')
 
-        return mkdirp(outputDir)
-        .then(() => {
-          return new Promise((resolve, reject) => {
-            fs.writeFile(outputFile, processedRoute.html.trim(), err => {
-              if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputFile}" \n ${err}.`)
+          return mkdirp(outputDir)
+            .then(() => {
+              return new Promise((resolve, reject) => {
+                fs.writeFile(outputFile, processedRoute.html.trim(), err => {
+                  if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputFile}" \n ${err}.`)
+                })
+
+                resolve()
+              })
             })
+            .catch(err => {
+              if (typeof err === 'string') {
+                err = `[prerender-spa-plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`
+              }
 
-            resolve()
-          })
-        })
-        .catch(err => {
-          if (typeof err === 'string') {
-            err = `[prerender-spa-plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`
-          }
+              throw err
+            })
+        }))
 
-          throw err
-        })
-      }))
-
-      return promises
-    })
-    .then(r => {
-      PrerendererInstance.destroy()
-      done()
-    })
-    .catch(err => {
-      PrerendererInstance.destroy()
-      console.error('[prerender-spa-plugin] Unable to prerender all routes!')
-      throw err
-    })
+        return promises
+      })
+      .then(r => {
+        PrerendererInstance.destroy()
+        done()
+      })
+      .catch(err => {
+        PrerendererInstance.destroy()
+        console.error('[prerender-spa-plugin] Unable to prerender all routes!')
+        throw err
+      })
   })
 }
 
