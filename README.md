@@ -26,7 +26,8 @@
 </div>
 
 ## About prerender-spa-plugin
-**:construction: Note: This is the beta v3 version of `prerender-spa-plugin`.**
+
+**:point_right: This is the stable `3.x` version of `prerender-spa-plugin` based on puppeteer. If you're looking for the (now-deprecated) `2.x` version, based on PhantomJS, take a look at the `v2` branch.**
 
 The goal of this plugin is to provide a simple prerendering solution that is easily extensible and usable for any site or single-page-app built with webpack.
 
