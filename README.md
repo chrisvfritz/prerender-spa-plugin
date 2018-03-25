@@ -36,11 +36,11 @@ Plugins for other task runners and build systems are planned.
 ## Examples
 Framework-specific examples can be found in the `examples/` directory.
 
-- [Vanilla JS](tree/v3/examples/vanilla-simple)
-- [Vue.js 2 Simple](tree/v3/examples/vue2-webpack-simple)
-- [Vue.js 2 Router](tree/v3/examples/vue2-webpack-router)
-- [React (Create React App + Eject)](tree/v3/examples/create-react-app-eject)
-- [Angular (Angular CLI + Eject)](tree/v3/examples/angular-cli-eject)
+- [Vanilla JS](examples/vanilla-simple)
+- [Vue.js 2 Simple](examples/vue2-webpack-simple)
+- [Vue.js 2 Router](examples/vue2-webpack-router)
+- [React (Create React App + Eject)](examples/create-react-app-eject)
+- [Angular (Angular CLI + Eject)](examples/angular-cli-eject)
 
 ### Basic Usage (`webpack.config.js`)
 ```js
