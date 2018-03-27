@@ -65,7 +65,7 @@ module.exports = {
 ```js
 const path = require('path')
 const PrerenderSPAPlugin = require('prerender-spa-plugin')
-const Renderer = PrerendererWebpackPlugin.PuppeteerRenderer
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 
 module.exports = {
   plugins: [
@@ -143,7 +143,7 @@ module.exports = {
 
         // Optional - Wait to render until a certain amount of time has passed.
         // NOT RECOMMENDED
-        renderAfterTime: 5000 // Wait 5 seconds.
+        renderAfterTime: 5000, // Wait 5 seconds.
 
         // Other puppeteer options.
         // (See here: https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions)
