@@ -1,8 +1,8 @@
 var path = require('path')
 var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-const PrerenderSpaPlugin = require('../../index.js')
-const Renderer = PrerenderSpaPlugin.PuppeteerRenderer
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+const PrerenderSPAPlugin = require('prerender-spa-plugin')
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 
 module.exports = {
   entry: './src/main.js',
@@ -15,12 +15,12 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
+        loader: 'vue-loader'
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -56,7 +56,7 @@ if (process.env.NODE_ENV === 'production') {
       filename: path.resolve(__dirname, 'dist/index.html'),
       favicon: 'favicon.ico'
     }),
-    new PrerenderSpaPlugin({
+    new PrerenderSPAPlugin({
       staticDir: path.join(__dirname, 'dist'),
       routes: [ '/', '/about', '/contact' ],
 

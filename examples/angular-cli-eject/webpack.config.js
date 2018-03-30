@@ -13,8 +13,8 @@ const { NoEmitOnErrorsPlugin, SourceMapDevToolPlugin, NamedModulesPlugin } = req
 const { NamedLazyChunksWebpackPlugin, BaseHrefWebpackPlugin, PostcssCliResources } = require('@angular/cli/plugins/webpack');
 const { CommonsChunkPlugin } = require('webpack').optimize;
 const { AngularCompilerPlugin } = require('@ngtools/webpack');
-const PrerenderSpaPlugin = require('../../index.js')
-const Renderer = PrerenderSpaPlugin.PuppeteerRenderer
+const PrerenderSPAPlugin = require('prerender-spa-plugin')
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
@@ -498,7 +498,7 @@ module.exports = {
       "compilerOptions": {}
     }),
     // == PRERENDER SPA PLUGIN == //
-    new PrerenderSpaPlugin({
+    new PrerenderSPAPlugin({
       // Index.html is in the root directory.
       staticDir: path.join(__dirname, 'dist'),
       routes: [ '/' ],

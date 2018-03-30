@@ -10,8 +10,8 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const PrerenderSpaPlugin = require('../../../index.js')
-const Renderer = PrerenderSpaPlugin.PuppeteerRenderer
+const PrerenderSPAPlugin = require('prerender-spa-plugin')
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -333,7 +333,7 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
     // == PRERENDER SPA PLUGIN == //
-    new PrerenderSpaPlugin({
+    new PrerenderSPAPlugin({
       // Index.html is in the root directory.
       staticDir: path.join(__dirname, '..', 'build'),
       routes: [ '/' ],

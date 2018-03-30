@@ -21,7 +21,7 @@ If all went well, it should load without JavaScript.
 
 ## Development
 
-To edit the `prerender-spa-plugin` configuration, look for `new PrerenderSpaPlugin` in the plugins section of `config/webpack.config.prod.js`.
+To edit the `prerender-spa-plugin` configuration, look for `new PrerenderSPAPlugin` in the plugins section of `config/webpack.config.prod.js`.
 
 If you're using a router or have more than one page to prerender, edit the `routes` array under that config object.
 

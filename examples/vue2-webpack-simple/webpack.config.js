@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
-const PrerenderSpaPlugin = require('../../index.js')
-const Renderer = PrerenderSpaPlugin.PuppeteerRenderer
+const PrerenderSPAPlugin = require('prerender-spa-plugin')
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 
 module.exports = {
   entry: './src/main.js',
@@ -17,8 +17,9 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader'
-        ],
-      },      {
+        ]
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -77,7 +78,7 @@ if (process.env.NODE_ENV === 'production') {
       minimize: true
     }),
     // == PRERENDER SPA PLUGIN == //
-    new PrerenderSpaPlugin({
+    new PrerenderSPAPlugin({
       // Index.html is in the root directory.
       staticDir: path.join(__dirname),
       routes: [ '/' ],

@@ -1,7 +1,7 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const PrerenderSpaPlugin = require('../../index.js')
-const Renderer = PrerenderSpaPlugin.PuppeteerRenderer
+const PrerenderSPAPlugin = require('prerender-spa-plugin')
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 
 module.exports = {
   entry: [ './src/main.js' ],
@@ -15,7 +15,7 @@ module.exports = {
       to: '.'
     }]),
     // == PRERENDER SPA PLUGIN == //
-    new PrerenderSpaPlugin({
+    new PrerenderSPAPlugin({
       // Index.html is in the root directory.
       staticDir: path.join(__dirname, 'dist'),
       routes: [ '/', '/about', '/some/deep/nested/route' ],

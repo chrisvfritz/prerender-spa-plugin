@@ -89,5 +89,8 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "prerender-spa-plugin": "^3.0.0"
   }
 }
