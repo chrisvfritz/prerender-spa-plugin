@@ -87,7 +87,8 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       .then(processedRoutes => {
         const promises = Promise.all(processedRoutes.map(processedRoute => {
           const outputDir = path.join(this._options.outputDir || this._options.staticDir, processedRoute.route)
-          const outputFile = path.join(outputDir, 'index.html')
+          const filename = this._options.outputFilename || 'index.html'
+          const outputFile = path.join(outputDir, filename)
 
           return mkdirp(outputDir)
             .then(() => {
