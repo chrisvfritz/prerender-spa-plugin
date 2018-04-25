@@ -72,28 +72,48 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
         })
         : renderedRoutes
       )
+      // Run postProcess hooks.
       .then(renderedRoutes => this._options.postProcess
         ? renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute))
         : renderedRoutes
       )
+      // Check to ensure postProcess hooks returned the renderedRoute object properly.
+      .then(renderedRoutes => {
+        const isValid = renderedRoutes.every(r => typeof r === 'object')
+        if (!isValid) {
+          throw new Error('[prerender-spa-plugin] Rendered routes are empty, did you forget to return the `context` object in postProcess?')
+        }
+
+        return renderedRoutes
+      })
+      // Minify html files if specified in config.
       .then(renderedRoutes => {
         if (!this._options.minify) return renderedRoutes
 
-        return renderedRoutes.map(route => {
+        renderedRoutes.forEach(route => {
           route.html = minify(route.html, this._options.minify)
-          return route
         })
+
+        return renderedRoutes
       })
+      // Calculate outputPath if it hasn't been set already.
+      .then(renderedRoutes => {
+        renderedRoutes.forEach(rendered => {
+          if (!rendered.outputPath) {
+            rendered.outputPath = path.join(this._options.outputDir || this._options.staticDir, rendered.route, 'index.html')
+          }
+        })
+
+        return renderedRoutes
+      })
+      // Create dirs and write prerendered files.
       .then(processedRoutes => {
         const promises = Promise.all(processedRoutes.map(processedRoute => {
-          const outputDir = path.join(this._options.outputDir || this._options.staticDir, processedRoute.route)
-          const outputFile = path.join(outputDir, 'index.html')
-
-          return mkdirp(outputDir)
+          return mkdirp(path.dirname(processedRoute.outputPath))
             .then(() => {
               return new Promise((resolve, reject) => {
-                fs.writeFile(outputFile, processedRoute.html.trim(), err => {
-                  if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputFile}" \n ${err}.`)
+                fs.writeFile(processedRoute.outputPath, processedRoute.html.trim(), err => {
+                  if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`)
                 })
 
                 resolve()
@@ -101,7 +121,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
             })
             .catch(err => {
               if (typeof err === 'string') {
-                err = `[prerender-spa-plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`
+                err = `[prerender-spa-plugin] Unable to create directory ${path.dirname(processedRoute.outputPath)} for route ${processedRoute.route}. \n ${err}`
               }
 
               throw err

@@ -91,13 +91,19 @@ module.exports = {
       // {
       //   route: String, // Where the output file will end up (relative to outputDir)
       //   originalRoute: String, // The route that was passed into the renderer, before redirects.
-      //   html: String // The rendered HTML for this route.
+      //   html: String, // The rendered HTML for this route.
+      //   outputPath: String // The path the rendered HTML will be written to.
       // }
       postProcess (renderedRoute) {
         // Ignore any redirects.
         renderedRoute.path = renderedRoute.originalPath
         // Basic whitespace removal. (Don't use this in production.)
         renderedRoute.html = renderedRoute.html.split(/>[\s]+</gmi).join('><')
+        // Remove /index.html from the output path if the dir name ends with a .html file extension.
+        // For example: /dist/dir/special.html/index.html -> /dist/dir/special.html
+        if (renderedRoute.path.endsWith('.html')) {
+          renderedRoute.outputPath = path.join(__dirname, 'dist', renderedRoute.path)
+        }
 
         return renderedRoute
       },
@@ -270,15 +276,15 @@ In the interest of transparency, there are some use-cases where prerendering mig
 
 ### Plugin Options
 
-| Option      | Type                                      | Required? | Default                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|-------------|-------------------------------------------|-----------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| staticDir   | String                                    | Yes       | None                      | The root path to serve your app from.                                                                                                                                                                                                                                                                                                                                                                                                               |
-| ouputDir    | String                                    | No        | None                      | Where the prerendered pages should be output. If not set, defaults to staticDir.                                                                                                                                                                                                                                                                                                                                                                    |
-| indexPath   | String                                    | No        | `staticDir/index.html`    | The index file to fall back on for SPAs.                                                                                                                                                                                                                                                                                                                                                                                                            |
-| postProcess | Function(Object context): Object          | No        | None                      | Passes in an object in the format ```javascript {   route: String, // The prerendered route, after following redirects.   originalRoute: String, // The original route passed, before redirects.   html: String // The resulting HTML for the route. } ```  You can modify `html` to change what gets written to the prerendered files, or modify `route` to change the output location. (Make sure to return the object once you're done with it.) |
-| minify      | Object                                    | No        | None                      | Minifies the resulting HTML using [html-minifier](https://github.com/kangax/html-minifier). Full list of options available [here](https://github.com/kangax/html-minifier#options-quick-reference).                                                                                                                                                                                                                                                 |
-| server      | Object                                    | No        | None                      | App server configuration options (See below)                                                                                                                                                                                                                                                                                                                                                                                                        |
-| renderer    | Renderer Instance or Configuration Object | No        | `new PuppeteerRenderer()` | The renderer you'd like to use to prerender the app. It's recommended that you specify this, but if not it will default to `@prerenderer/renderer-puppeteer`.                                                                                                                                                                                                                                                                                       |
+| Option | Type | Required? | Default | Description |
+|-------------|-------------------------------------------|-----------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| staticDir | String | Yes | None | The root path to serve your app from. |
+| ouputDir | String | No | None | Where the prerendered pages should be output. If not set, defaults to staticDir. |
+| indexPath | String | No | `staticDir/index.html` | The index file to fall back on for SPAs. |
+| postProcess | Function(Object context): Object | No | None | See the [Using the postProcess Option](#using-the-postprocess-option) section. |
+| minify | Object | No | None | Minifies the resulting HTML using [html-minifier](https://github.com/kangax/html-minifier). Full list of options available [here](https://github.com/kangax/html-minifier#options-quick-reference). |
+| server | Object | No | None | App server configuration options (See below) |
+| renderer | Renderer Instance or Configuration Object | No | `new PuppeteerRenderer()` | The renderer you'd like to use to prerender the app. It's recommended that you specify this, but if not it will default to `@prerenderer/renderer-puppeteer`. |
 
 #### Server Options
 
@@ -286,6 +292,42 @@ In the interest of transparency, there are some use-cases where prerendering mig
 |--------|---------|-----------|----------------------------|----------------------------------------|
 | port   | Integer | No        | First free port after 8000 | The port for the app server to run on. |
 | proxy  | Object  | No        | No proxying                | Proxy configuration. Has the same signature as [webpack-dev-server](https://github.com/webpack/docs/wiki/webpack-dev-server#proxy) |
+
+
+#### Using The postProcess Option
+
+The `postProcess(Object context): Object` function in your renderer configuration allows you to adjust the output of `prerender-spa-plugin` before writing it to a file. It is called once per rendered route and is passed a `context` object in the form of:
+
+```javascript
+{
+  // The prerendered route, after following redirects.
+  route: String,
+  // The original route passed, before redirects.
+  originalRoute: String,
+  // The resulting HTML for the route.
+  html: String,
+  // The path to write the rendered HTML to.
+  // This is null (automatically calculated after postProcess)
+  // unless explicitly set.
+  outputPath: String || null
+}
+```
+
+You can modify `context.html` to change what gets written to the prerendered files and/or modify `context.route` or `context.outputPath` to change the output location.
+
+You are expected to adjust those properties as needed, then return the context object, like so:
+
+```javascript
+postProcess(context) {
+  // Remove /index.html from the output path if the dir name ends with a .html file extension.
+  // For example: /dist/dir/special.html/index.html -> /dist/dir/special.html
+  if (context.path.endsWith('.html')) {
+    context.outputPath = path.join(__dirname, 'dist', context.path)
+  }
+
+  return context
+}
+```
 
 ---
 
