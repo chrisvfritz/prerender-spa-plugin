@@ -45,8 +45,8 @@
     "email": "chrisvfritz@gmail.com"
   },
   "dependencies": {
-    "@prerenderer/prerenderer": "^0.7.0",
-    "@prerenderer/renderer-puppeteer": "^0.1.3",
+    "@prerenderer/prerenderer": "^0.7.1",
+    "@prerenderer/renderer-puppeteer": "^0.1.4",
     "html-minifier": "^3.5.12",
     "mkdirp-promise": "^5.0.1"
   },
