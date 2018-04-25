@@ -80,33 +80,58 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
 
         return renderedRoute;
       }) : renderedRoutes;
-    }).then(function (renderedRoutes) {
+    })
+    // Run postProcess hooks.
+    .then(function (renderedRoutes) {
       return _this2._options.postProcess ? renderedRoutes.map(function (renderedRoute) {
         return _this2._options.postProcess(renderedRoute);
       }) : renderedRoutes;
-    }).then(function (renderedRoutes) {
+    })
+    // Check to ensure postProcess hooks returned the renderedRoute object properly.
+    .then(function (renderedRoutes) {
+      var isValid = renderedRoutes.every(function (r) {
+        return typeof r === 'object';
+      });
+      if (!isValid) {
+        throw new Error('[prerender-spa-plugin] Rendered routes are empty, did you forget to return the `context` object in postProcess?');
+      }
+
+      return renderedRoutes;
+    })
+    // Minify html files if specified in config.
+    .then(function (renderedRoutes) {
       if (!_this2._options.minify) return renderedRoutes;
 
-      return renderedRoutes.map(function (route) {
+      renderedRoutes.forEach(function (route) {
         route.html = minify(route.html, _this2._options.minify);
-        return route;
       });
-    }).then(function (processedRoutes) {
-      var promises = Promise.all(processedRoutes.map(function (processedRoute) {
-        var outputDir = path.join(_this2._options.outputDir || _this2._options.staticDir, processedRoute.route);
-        var outputFile = path.join(outputDir, 'index.html');
 
-        return mkdirp(outputDir).then(function () {
+      return renderedRoutes;
+    })
+    // Calculate outputPath if it hasn't been set already.
+    .then(function (renderedRoutes) {
+      renderedRoutes.forEach(function (rendered) {
+        if (!rendered.outputPath) {
+          rendered.outputPath = path.join(_this2._options.outputDir || _this2._options.staticDir, rendered.route, 'index.html');
+        }
+      });
+
+      return renderedRoutes;
+    })
+    // Create dirs and write prerendered files.
+    .then(function (processedRoutes) {
+      var promises = Promise.all(processedRoutes.map(function (processedRoute) {
+        return mkdirp(path.dirname(processedRoute.outputPath)).then(function () {
           return new Promise(function (resolve, reject) {
-            fs.writeFile(outputFile, processedRoute.html.trim(), function (err) {
-              if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputFile}" \n ${err}.`);
+            fs.writeFile(processedRoute.outputPath, processedRoute.html.trim(), function (err) {
+              if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`);
             });
 
             resolve();
           });
         }).catch(function (err) {
           if (typeof err === 'string') {
-            err = `[prerender-spa-plugin] Unable to create directory ${outputDir} for route ${processedRoute.route}. \n ${err}`;
+            err = `[prerender-spa-plugin] Unable to create directory ${path.dirname(processedRoute.outputPath)} for route ${processedRoute.route}. \n ${err}`;
           }
 
           throw err;
