@@ -137,7 +137,7 @@ module.exports = {
 
         // Optional - defaults to 0, no limit.
         // Routes are rendered asynchronously.
-        // Use this to limit the number of routes rendered in paralell.
+        // Use this to limit the number of routes rendered in parallel.
         maxConcurrentRoutes: 4,
 
         // Optional - Wait to render until the specified event is dispatched on the document.
