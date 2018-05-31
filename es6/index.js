@@ -54,7 +54,7 @@ function PrerenderSPAPlugin (...args) {
 }
 
 PrerenderSPAPlugin.prototype.apply = function (compiler) {
-  compiler.plugin('after-emit', (compilation, done) => {
+  const afterEmit = (compilation, done) => {
     const PrerendererInstance = new Prerenderer(this._options)
 
     PrerendererInstance.initialize()
@@ -139,7 +139,14 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
         console.error('[prerender-spa-plugin] Unable to prerender all routes!')
         throw err
       })
-  })
+  }
+
+  if (compiler.hooks) {
+    const plugin = { name: 'PrerenderSPAPlugin' }
+    compiler.hooks.afterEmit.tapAsync(plugin, afterEmit)
+  } else {
+    compiler.plugin('after-emit', afterEmit)
+  }
 }
 
 PrerenderSPAPlugin.PuppeteerRenderer = PuppeteerRenderer
