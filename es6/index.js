@@ -4,7 +4,6 @@ const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
 const { minify } = require('html-minifier')
 
 function PrerenderSPAPlugin (...args) {
-  console.log('BUILDING')
   const rendererOptions = {} // Primarily for backwards-compatibility.
 
   this._options = {}

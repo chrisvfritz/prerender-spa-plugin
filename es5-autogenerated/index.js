@@ -10,7 +10,6 @@ var _require = require('html-minifier'),
 function PrerenderSPAPlugin() {
   var _this = this;
 
-  console.log('BUILDING');
   var rendererOptions = {}; // Primarily for backwards-compatibility.
 
   this._options = {};
