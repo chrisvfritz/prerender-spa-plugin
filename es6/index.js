@@ -1,11 +1,10 @@
-const fs = require('fs')
 const path = require('path')
-const mkdirp = require('mkdirp-promise')
 const Prerenderer = require('@prerenderer/prerenderer')
 const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
 const { minify } = require('html-minifier')
 
 function PrerenderSPAPlugin (...args) {
+  console.log('BUILDING')
   const rendererOptions = {} // Primarily for backwards-compatibility.
 
   this._options = {}
@@ -54,6 +53,15 @@ function PrerenderSPAPlugin (...args) {
 }
 
 PrerenderSPAPlugin.prototype.apply = function (compiler) {
+  const compilerFS = compiler.outputFileSystem
+
+  // From https://github.com/ahmadnassri/mkdirp-promise/blob/master/lib/index.js
+  const mkdirp = function (dir, opts) {
+    return new Promise((resolve, reject) => {
+      compilerFS.mkdirp(dir, opts, (err, made) => err === null ? resolve(made) : reject(err))
+    })
+  }
+
   const afterEmit = (compilation, done) => {
     const PrerendererInstance = new Prerenderer(this._options)
 
@@ -112,7 +120,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
           return mkdirp(path.dirname(processedRoute.outputPath))
             .then(() => {
               return new Promise((resolve, reject) => {
-                fs.writeFile(processedRoute.outputPath, processedRoute.html.trim(), err => {
+                compilerFS.writeFile(processedRoute.outputPath, processedRoute.html.trim(), err => {
                   if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`)
                 })
 

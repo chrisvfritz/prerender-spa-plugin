@@ -1,8 +1,6 @@
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
-var mkdirp = require('mkdirp-promise');
 var Prerenderer = require('@prerenderer/prerenderer');
 var PuppeteerRenderer = require('@prerenderer/renderer-puppeteer');
 
@@ -12,6 +10,7 @@ var _require = require('html-minifier'),
 function PrerenderSPAPlugin() {
   var _this = this;
 
+  console.log('BUILDING');
   var rendererOptions = {}; // Primarily for backwards-compatibility.
 
   this._options = {};
@@ -66,7 +65,18 @@ function PrerenderSPAPlugin() {
 PrerenderSPAPlugin.prototype.apply = function (compiler) {
   var _this2 = this;
 
-  compiler.plugin('after-emit', function (compilation, done) {
+  var compilerFS = compiler.outputFileSystem;
+
+  // From https://github.com/ahmadnassri/mkdirp-promise/blob/master/lib/index.js
+  var mkdirp = function mkdirp(dir, opts) {
+    return new Promise(function (resolve, reject) {
+      compilerFS.mkdirp(dir, opts, function (err, made) {
+        return err === null ? resolve(made) : reject(err);
+      });
+    });
+  };
+
+  var afterEmit = function afterEmit(compilation, done) {
     var PrerendererInstance = new Prerenderer(_this2._options);
 
     PrerendererInstance.initialize().then(function () {
@@ -123,7 +133,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       var promises = Promise.all(processedRoutes.map(function (processedRoute) {
         return mkdirp(path.dirname(processedRoute.outputPath)).then(function () {
           return new Promise(function (resolve, reject) {
-            fs.writeFile(processedRoute.outputPath, processedRoute.html.trim(), function (err) {
+            compilerFS.writeFile(processedRoute.outputPath, processedRoute.html.trim(), function (err) {
               if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`);
             });
 
@@ -147,7 +157,14 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       console.error('[prerender-spa-plugin] Unable to prerender all routes!');
       throw err;
     });
-  });
+  };
+
+  if (compiler.hooks) {
+    var plugin = { name: 'PrerenderSPAPlugin' };
+    compiler.hooks.afterEmit.tapAsync(plugin, afterEmit);
+  } else {
+    compiler.plugin('after-emit', afterEmit);
+  }
 };
 
 PrerenderSPAPlugin.PuppeteerRenderer = PuppeteerRenderer;
