@@ -96,13 +96,13 @@ module.exports = {
       // }
       postProcess (renderedRoute) {
         // Ignore any redirects.
-        renderedRoute.path = renderedRoute.originalPath
+        renderedRoute.route = renderedRoute.originalPath
         // Basic whitespace removal. (Don't use this in production.)
         renderedRoute.html = renderedRoute.html.split(/>[\s]+</gmi).join('><')
         // Remove /index.html from the output path if the dir name ends with a .html file extension.
         // For example: /dist/dir/special.html/index.html -> /dist/dir/special.html
-        if (renderedRoute.path.endsWith('.html')) {
-          renderedRoute.outputPath = path.join(__dirname, 'dist', renderedRoute.path)
+        if (renderedRoute.route.endsWith('.html')) {
+          renderedRoute.outputPath = path.join(__dirname, 'dist', renderedRoute.route)
         }
 
         return renderedRoute
@@ -321,8 +321,8 @@ You are expected to adjust those properties as needed, then return the context o
 postProcess(context) {
   // Remove /index.html from the output path if the dir name ends with a .html file extension.
   // For example: /dist/dir/special.html/index.html -> /dist/dir/special.html
-  if (context.path.endsWith('.html')) {
-    context.outputPath = path.join(__dirname, 'dist', context.path)
+  if (context.route.endsWith('.html')) {
+    context.outputPath = path.join(__dirname, 'dist', context.route)
   }
 
   return context
