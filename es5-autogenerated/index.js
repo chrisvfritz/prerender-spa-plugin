@@ -133,10 +133,8 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
         return mkdirp(path.dirname(processedRoute.outputPath)).then(function () {
           return new Promise(function (resolve, reject) {
             compilerFS.writeFile(processedRoute.outputPath, processedRoute.html.trim(), function (err) {
-              if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`);
+              if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`);else resolve();
             });
-
-            resolve();
           });
         }).catch(function (err) {
           if (typeof err === 'string') {
@@ -153,8 +151,9 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       done();
     }).catch(function (err) {
       PrerendererInstance.destroy();
-      console.error('[prerender-spa-plugin] Unable to prerender all routes!');
-      compilation.errors.push(new Error('[prerender-spa-plugin] Unable to prerender all routes!'));
+      var msg = '[prerender-spa-plugin] Unable to prerender all routes!';
+      console.error(msg);
+      compilation.errors.push(new Error(msg));
       done();
     });
   };
