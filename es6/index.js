@@ -121,9 +121,8 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
               return new Promise((resolve, reject) => {
                 compilerFS.writeFile(processedRoute.outputPath, processedRoute.html.trim(), err => {
                   if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`)
+                  else resolve()
                 })
-
-                resolve()
               })
             })
             .catch(err => {
@@ -143,9 +142,10 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       })
       .catch(err => {
         PrerendererInstance.destroy()
-        console.error('[prerender-spa-plugin] Unable to prerender all routes!');
-        compilation.errors.push( new Error( '[prerender-spa-plugin] Unable to prerender all routes!' ) );
-        done();
+        const msg = '[prerender-spa-plugin] Unable to prerender all routes!'
+        console.error(msg)
+        compilation.errors.push(new Error(msg))
+        done()
       })
   }
 
