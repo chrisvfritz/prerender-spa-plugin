@@ -37,6 +37,10 @@
       "name": "Joshua Bemenderfer",
       "email": "tribex10@gmail.com",
       "url": "https://joshderf.com/"
+    },
+    {
+      "name": "qkdreyer",
+      "email": "quentin.dreyer@gmail.com"
     }
   ],
   "repository": "chrisvfritz/prerender-spa-plugin",
