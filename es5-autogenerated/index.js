@@ -83,18 +83,18 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
     })
     // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
     .then(function (renderedRoutes) {
-      return _this2._options.postProcessHtml ? renderedRoutes.map(function (renderedRoute) {
+      return _this2._options.postProcessHtml ? Promise.all(renderedRoutes.map(function (renderedRoute) {
         var processed = _this2._options.postProcessHtml(renderedRoute);
         if (typeof processed === 'string') renderedRoute.html = processed;else renderedRoute = processed;
 
         return renderedRoute;
-      }) : renderedRoutes;
+      })) : renderedRoutes;
     })
     // Run postProcess hooks.
     .then(function (renderedRoutes) {
-      return _this2._options.postProcess ? renderedRoutes.map(function (renderedRoute) {
+      return _this2._options.postProcess ? Promise.all(renderedRoutes.map(function (renderedRoute) {
         return _this2._options.postProcess(renderedRoute);
-      }) : renderedRoutes;
+      })) : renderedRoutes;
     })
     // Check to ensure postProcess hooks returned the renderedRoute object properly.
     .then(function (renderedRoutes) {

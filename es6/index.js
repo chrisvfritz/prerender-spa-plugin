@@ -70,18 +70,18 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       })
       // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
       .then(renderedRoutes => this._options.postProcessHtml
-        ? renderedRoutes.map(renderedRoute => {
+        ? Promise.all(renderedRoutes.map(renderedRoute => {
           const processed = this._options.postProcessHtml(renderedRoute)
           if (typeof processed === 'string') renderedRoute.html = processed
           else renderedRoute = processed
 
           return renderedRoute
-        })
+        }))
         : renderedRoutes
       )
       // Run postProcess hooks.
       .then(renderedRoutes => this._options.postProcess
-        ? renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute))
+        ? Promise.all(renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute)))
         : renderedRoutes
       )
       // Check to ensure postProcess hooks returned the renderedRoute object properly.
