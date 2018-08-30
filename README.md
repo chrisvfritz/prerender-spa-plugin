@@ -296,7 +296,7 @@ In the interest of transparency, there are some use-cases where prerendering mig
 
 #### Using The postProcess Option
 
-The `postProcess(Object context): Object` function in your renderer configuration allows you to adjust the output of `prerender-spa-plugin` before writing it to a file. It is called once per rendered route and is passed a `context` object in the form of:
+The `postProcess(Object context): Object | Promise` function in your renderer configuration allows you to adjust the output of `prerender-spa-plugin` before writing it to a file. It is called once per rendered route and is passed a `context` object in the form of:
 
 ```javascript
 {
@@ -315,7 +315,7 @@ The `postProcess(Object context): Object` function in your renderer configuratio
 
 You can modify `context.html` to change what gets written to the prerendered files and/or modify `context.route` or `context.outputPath` to change the output location.
 
-You are expected to adjust those properties as needed, then return the context object, like so:
+You are expected to adjust those properties as needed, then return the context object, or a promise that resolves to it like so:
 
 ```javascript
 postProcess(context) {
@@ -326,6 +326,14 @@ postProcess(context) {
   }
 
   return context
+}
+
+postProcess(context) {
+  return someAsyncProcessing(context.html)
+    .then((html) => {
+      context.html = html;
+      return context;
+    });
 }
 ```
 
