@@ -281,7 +281,7 @@ In the interest of transparency, there are some use-cases where prerendering mig
 | staticDir | String | Yes | None | The root path to serve your app from. |
 | ouputDir | String | No | None | Where the prerendered pages should be output. If not set, defaults to staticDir. |
 | indexPath | String | No | `staticDir/index.html` | The index file to fall back on for SPAs. |
-| postProcess | Function(Object context): Object | No | None | See the [Using the postProcess Option](#using-the-postprocess-option) section. |
+| postProcess | Function(Object context): [Object \| Promise] | No | None | See the [Using the postProcess Option](#using-the-postprocess-option) section. |
 | minify | Object | No | None | Minifies the resulting HTML using [html-minifier](https://github.com/kangax/html-minifier). Full list of options available [here](https://github.com/kangax/html-minifier#options-quick-reference). |
 | server | Object | No | None | App server configuration options (See below) |
 | renderer | Renderer Instance or Configuration Object | No | `new PuppeteerRenderer()` | The renderer you'd like to use to prerender the app. It's recommended that you specify this, but if not it will default to `@prerenderer/renderer-puppeteer`. |
@@ -296,7 +296,7 @@ In the interest of transparency, there are some use-cases where prerendering mig
 
 #### Using The postProcess Option
 
-The `postProcess(Object context): Object` function in your renderer configuration allows you to adjust the output of `prerender-spa-plugin` before writing it to a file. It is called once per rendered route and is passed a `context` object in the form of:
+The `postProcess(Object context): Object | Promise` function in your renderer configuration allows you to adjust the output of `prerender-spa-plugin` before writing it to a file. It is called once per rendered route and is passed a `context` object in the form of:
 
 ```javascript
 {
@@ -315,7 +315,7 @@ The `postProcess(Object context): Object` function in your renderer configuratio
 
 You can modify `context.html` to change what gets written to the prerendered files and/or modify `context.route` or `context.outputPath` to change the output location.
 
-You are expected to adjust those properties as needed, then return the context object, like so:
+You are expected to adjust those properties as needed, then return the context object, or a promise that resolves to it like so:
 
 ```javascript
 postProcess(context) {
@@ -326,6 +326,14 @@ postProcess(context) {
   }
 
   return context
+}
+
+postProcess(context) {
+  return someAsyncProcessing(context.html)
+    .then((html) => {
+      context.html = html;
+      return context;
+    });
 }
 ```
 

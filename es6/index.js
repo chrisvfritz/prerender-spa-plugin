@@ -81,7 +81,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       )
       // Run postProcess hooks.
       .then(renderedRoutes => this._options.postProcess
-        ? renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute))
+        ? Promise.all(renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute)))
         : renderedRoutes
       )
       // Check to ensure postProcess hooks returned the renderedRoute object properly.
