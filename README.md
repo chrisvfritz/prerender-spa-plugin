@@ -337,6 +337,9 @@ postProcess(context) {
 }
 ```
 
+#### Vue.js Notes
+If you are having issues prerendering with Vue.js, try adding the [`data-server-rendered="true"`](https://ssr.vuejs.org/guide/hydration.html) attribute to your root app element. This will cause Vue to treat your current page as an already-rendered app and update it rather than completely rerendering the whole tree. You can add the attribute using `postProcess` or by manipulating the DOM with JavaScript prior prerendering with `renderAfterDocumentEvent`.
+
 ---
 
 ### `@prerenderer/renderer-puppeteer` options
