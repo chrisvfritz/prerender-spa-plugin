@@ -96,7 +96,7 @@ module.exports = {
       // }
       postProcess (renderedRoute) {
         // Ignore any redirects.
-        renderedRoute.route = renderedRoute.originalPath
+        renderedRoute.route = renderedRoute.originalRoute
         // Basic whitespace removal. (Don't use this in production.)
         renderedRoute.html = renderedRoute.html.split(/>[\s]+</gmi).join('><')
         // Remove /index.html from the output path if the dir name ends with a .html file extension.
