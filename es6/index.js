@@ -33,7 +33,7 @@ function PrerenderSPAPlugin (...args) {
     rendererOptions.renderAfterDocumentEvent = this._options.captureAfterDocumentEvent
   }
 
-  if (this._options.captureAfterDocumentEvent) {
+  if (this._options.captureAfterElementExists) {
     console.warn('[prerender-spa-plugin] captureAfterElementExists has been renamed to renderAfterElementExists and should be moved to the renderer options.')
     rendererOptions.renderAfterElementExists = this._options.captureAfterElementExists
   }
