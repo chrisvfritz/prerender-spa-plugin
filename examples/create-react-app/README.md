@@ -1,6 +1,6 @@
-# Ejected Create-React-App - Prerender SPA Example
+# Create-React-App - Prerender SPA Example
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app) and ejected in order to allow modification of the webpack configuration.
+This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app) and uses [react-app-rewired](https://github.com/timarney/react-app-rewired) to allow modification of the webpack configuration.
 
 ## Build
 
@@ -21,7 +21,7 @@ If all went well, it should load without JavaScript.
 
 ## Development
 
-To edit the `prerender-spa-plugin` configuration, look for `new PrerenderSPAPlugin` in the plugins section of `config/webpack.config.prod.js`.
+To edit the `prerender-spa-plugin` configuration, look for `new PrerenderSPAPlugin` in `config-overrides.js`.
 
 If you're using a router or have more than one page to prerender, edit the `routes` array under that config object.
 

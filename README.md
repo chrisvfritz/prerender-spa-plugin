@@ -39,7 +39,7 @@ Framework-specific examples can be found in the `examples/` directory.
 - [Vanilla JS](examples/vanilla-simple)
 - [Vue.js 2 Simple](examples/vue2-webpack-simple)
 - [Vue.js 2 Router](examples/vue2-webpack-router)
-- [React (Create React App + Eject)](examples/create-react-app-eject)
+- [React (Create React App)](examples/create-react-app)
 - [Angular (Angular CLI + Eject)](examples/angular-cli-eject)
 
 ### Basic Usage (`webpack.config.js`)
