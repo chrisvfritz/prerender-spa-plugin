@@ -279,7 +279,7 @@ In the interest of transparency, there are some use-cases where prerendering mig
 | Option | Type | Required? | Default | Description |
 |-------------|-------------------------------------------|-----------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | staticDir | String | Yes | None | The root path to serve your app from. |
-| ouputDir | String | No | None | Where the prerendered pages should be output. If not set, defaults to staticDir. |
+| outputDir | String | No | None | Where the prerendered pages should be output. If not set, defaults to staticDir. |
 | indexPath | String | No | `staticDir/index.html` | The index file to fall back on for SPAs. |
 | postProcess | Function(Object context): [Object \| Promise] | No | None | See the [Using the postProcess Option](#using-the-postprocess-option) section. |
 | minify | Object | No | None | Minifies the resulting HTML using [html-minifier](https://github.com/kangax/html-minifier). Full list of options available [here](https://github.com/kangax/html-minifier#options-quick-reference). |
