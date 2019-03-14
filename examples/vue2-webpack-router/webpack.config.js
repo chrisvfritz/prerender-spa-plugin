@@ -3,8 +3,10 @@ var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 const PrerenderSPAPlugin = require('prerender-spa-plugin')
 const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
+  mode: process.env.NODE_ENV,
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -28,6 +30,13 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
       }
     ]
   },
@@ -40,7 +49,10 @@ module.exports = {
     historyApiFallback: true,
     noInfo: false,
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    new VueLoaderPlugin(),
+  ]
 }
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
@@ -64,7 +76,7 @@ if (process.env.NODE_ENV === 'production') {
         inject: {
           foo: 'bar'
         },
-        headless: false,
+        headless: true,
         renderAfterDocumentEvent: 'render-event'
       })
     })
