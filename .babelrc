@@ -1,18 +1,18 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "node": 4,
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "4"
+        }
       }
-    }],
-    "stage-2"
+    ]
   ],
   "plugins": [
-    ["transform-runtime", {
+    ["@babel/plugin-transform-runtime", {
       "helpers": false,
-      "polyfill": false,
-      "regenerator": true,
-      "moduleName": "babel-runtime"
+      "regenerator": true
     }]
   ]
 }
