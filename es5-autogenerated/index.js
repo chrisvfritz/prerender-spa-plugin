@@ -7,6 +7,8 @@ var PuppeteerRenderer = require('@prerenderer/renderer-puppeteer');
 var _require = require('html-minifier'),
     minify = _require.minify;
 
+var beautify = require('js-beautify').html;
+
 function PrerenderSPAPlugin() {
   var _this = this;
 
@@ -113,6 +115,16 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
 
       renderedRoutes.forEach(function (route) {
         route.html = minify(route.html, _this2._options.minify);
+      });
+
+      return renderedRoutes;
+    })
+    // Beautify html files if specified in config.
+    .then(function (renderedRoutes) {
+      if (!_this2._options.beautify) return renderedRoutes;
+
+      renderedRoutes.forEach(function (route) {
+        route.html = beautify(route.html, _this2._options.beautify);
       });
 
       return renderedRoutes;
