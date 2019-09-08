@@ -119,6 +119,18 @@ module.exports = {
         sortAttributes: true
       },
 
+      // Optional - Uses js-beautify (https://github.com/kangax/html-minifier)
+      // To beautify the resulting HTML.
+      // Option reference: https://github.com/beautify-web/js-beautify#options
+      beautify: {
+        end_with_newline: false,
+        indent_size: 4,
+        indent_with_tabs: true,
+        indent_inner_html: true,
+        preserve_newlines: false,
+        unformatted: ['p', 'i', 'b', 'span']
+      },
+
       // Server configuration options.
       server: {
         // Normally a free port is autodetected, but feel free to set this if needed.
@@ -283,6 +295,7 @@ In the interest of transparency, there are some use-cases where prerendering mig
 | indexPath | String | No | `staticDir/index.html` | The index file to fall back on for SPAs. |
 | postProcess | Function(Object context): [Object \| Promise] | No | None | See the [Using the postProcess Option](#using-the-postprocess-option) section. |
 | minify | Object | No | None | Minifies the resulting HTML using [html-minifier](https://github.com/kangax/html-minifier). Full list of options available [here](https://github.com/kangax/html-minifier#options-quick-reference). |
+| beautify | Object | No | None | Beautifies the resulting HTML using [js-beautify](https://github.com/beautify-web/js-beautify). Full list of options available [here](https://github.com/beautify-web/js-beautify#options). This can work in conjunction with "minify", for example by deleting comments.|
 | server | Object | No | None | App server configuration options (See below) |
 | renderer | Renderer Instance or Configuration Object | No | `new PuppeteerRenderer()` | The renderer you'd like to use to prerender the app. It's recommended that you specify this, but if not it will default to `@prerenderer/renderer-puppeteer`. |
 
