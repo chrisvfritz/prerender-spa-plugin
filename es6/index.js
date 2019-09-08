@@ -2,6 +2,7 @@ const path = require('path')
 const Prerenderer = require('@prerenderer/prerenderer')
 const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
 const { minify } = require('html-minifier')
+const beautify = require('js-beautify').html
 
 function PrerenderSPAPlugin (...args) {
   const rendererOptions = {} // Primarily for backwards-compatibility.
@@ -99,6 +100,16 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
 
         renderedRoutes.forEach(route => {
           route.html = minify(route.html, this._options.minify)
+        })
+
+        return renderedRoutes
+      })
+      // Beautify html files if specified in config.
+      .then(renderedRoutes => {
+        if (!this._options.beautify) return renderedRoutes
+
+        renderedRoutes.forEach(route => {
+          route.html = beautify(route.html, this._options.beautify)
         })
 
         return renderedRoutes
