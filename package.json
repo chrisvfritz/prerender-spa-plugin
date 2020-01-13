@@ -50,7 +50,6 @@
   },
   "dependencies": {
     "@prerenderer/prerenderer": "^0.7.2",
-    "@prerenderer/renderer-puppeteer": "^0.2.0",
     "html-minifier": "^3.5.16"
   },
   "devDependencies": {

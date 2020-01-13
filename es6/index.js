@@ -1,6 +1,5 @@
 const path = require('path')
 const Prerenderer = require('@prerenderer/prerenderer')
-const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
 const { minify } = require('html-minifier')
 
 function PrerenderSPAPlugin (...args) {
@@ -44,7 +43,7 @@ function PrerenderSPAPlugin (...args) {
   }
 
   this._options.server = this._options.server || {}
-  this._options.renderer = this._options.renderer || new PuppeteerRenderer(Object.assign({}, { headless: true }, rendererOptions))
+  this._options.renderer = this._options.renderer
   this._options.batchSize = this._options.batchSize || this._options.routes.length
 
   if (this._options.postProcessHtml) {
