@@ -163,6 +163,4 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
   }
 }
 
-PrerenderSPAPlugin.PuppeteerRenderer = PuppeteerRenderer
-
 module.exports = PrerenderSPAPlugin
