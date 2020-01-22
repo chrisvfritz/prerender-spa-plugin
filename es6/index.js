@@ -117,22 +117,28 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
           // Create dirs and write prerendered files.
           reportProgress((batchNumber) / (numBatches * 2), `writing batch ${batchNumber}/${numBatches}`)
           await Promise.all(renderedRoutes.map(route => {
-            return mkdirp(path.dirname(route.outputPath))
+            const paths = [route.outputPath]
+            if (Array.isArray(route.alternateOutputPaths)) {
+              paths.push(...route.alternateOutputPaths)
+            }
+
+            return Promise.all(paths.map(outputPath => mkdirp(path.dirname(outputPath))
               .then(() => {
                 return new Promise((resolve, reject) => {
-                  compilerFS.writeFile(route.outputPath, route.html.trim(), err => {
-                    if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${route.outputPath}" \n ${err}.`)
+                  compilerFS.writeFile(outputPath, route.html.trim(), err => {
+                    if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputPath}" \n ${err}.`)
                     else resolve()
                   })
                 })
               })
               .catch(err => {
                 if (typeof err === 'string') {
-                  err = `[prerender-spa-plugin] Unable to create directory ${path.dirname(route.outputPath)} for route ${route.route}. \n ${err}`
+                  err = `[prerender-spa-plugin] Unable to create directory ${path.dirname(outputPath)} for route ${route.route}. \n ${err}`
                 }
 
                 throw err
               })
+            ))
           }))
 
           await PrerendererInstance.destroy()
