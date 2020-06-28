@@ -54,7 +54,7 @@
     "html-minifier": "^3.5.16"
   },
   "devDependencies": {
-    "ava": "^0.25.0",
+    "ava": "^3.9.0",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^8.2.3",
     "babel-plugin-transform-runtime": "^6.23.0",
