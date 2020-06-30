@@ -1,6 +1,5 @@
 const path = require('path')
 const Prerenderer = require('@prerenderer/prerenderer')
-const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
 const { minify } = require('html-minifier')
 
 function PrerenderSPAPlugin (...args) {
@@ -12,7 +11,7 @@ function PrerenderSPAPlugin (...args) {
   if (args.length === 1) {
     this._options = args[0] || {}
 
-  // Backwards-compatibility with v2
+    // Backwards-compatibility with v2
   } else {
     console.warn("[prerender-spa-plugin] You appear to be using the v2 argument-based configuration options. It's recommended that you migrate to the clearer object-based configuration system.\nCheck the documentation for more information.")
     let staticDir, routes
@@ -44,7 +43,8 @@ function PrerenderSPAPlugin (...args) {
   }
 
   this._options.server = this._options.server || {}
-  this._options.renderer = this._options.renderer || new PuppeteerRenderer(Object.assign({}, { headless: true }, rendererOptions))
+  this._options.renderer = this._options.renderer
+  this._options.batchSize = this._options.batchSize || this._options.routes.length
 
   if (this._options.postProcessHtml) {
     console.warn('[prerender-spa-plugin] postProcessHtml should be migrated to postProcess! Consult the documentation for more information.')
@@ -61,102 +61,112 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
     })
   }
 
-  const afterEmit = (compilation, done) => {
-    const PrerendererInstance = new Prerenderer(this._options)
+  const afterEmit = async (context, compilation, done) => {
+    try {
+      const reportProgress = (context && context.reportProgress) || (() => { })
+      const routes = this._options.routes.slice()
+      const numBatches = Math.ceil(routes.length / this._options.batchSize)
+      let batchNumber = 1
+      while (routes.length > 0) {
+        const batch = routes.splice(0, this._options.batchSize)
+        const PrerendererInstance = new Prerenderer(this._options)
 
-    PrerendererInstance.initialize()
-      .then(() => {
-        return PrerendererInstance.renderRoutes(this._options.routes || [])
-      })
-      // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
-      .then(renderedRoutes => this._options.postProcessHtml
-        ? renderedRoutes.map(renderedRoute => {
-          const processed = this._options.postProcessHtml(renderedRoute)
-          if (typeof processed === 'string') renderedRoute.html = processed
-          else renderedRoute = processed
+        try {
+          reportProgress((batchNumber - 1) / numBatches, `starting batch ${batchNumber}/${numBatches}`)
 
-          return renderedRoute
-        })
-        : renderedRoutes
-      )
-      // Run postProcess hooks.
-      .then(renderedRoutes => this._options.postProcess
-        ? Promise.all(renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute)))
-        : renderedRoutes
-      )
-      // Check to ensure postProcess hooks returned the renderedRoute object properly.
-      .then(renderedRoutes => {
-        const isValid = renderedRoutes.every(r => typeof r === 'object')
-        if (!isValid) {
-          throw new Error('[prerender-spa-plugin] Rendered routes are empty, did you forget to return the `context` object in postProcess?')
-        }
+          await PrerendererInstance.initialize()
 
-        return renderedRoutes
-      })
-      // Minify html files if specified in config.
-      .then(renderedRoutes => {
-        if (!this._options.minify) return renderedRoutes
+          reportProgress(batchNumber / numBatches, `rendering batch ${batchNumber}/${numBatches}`)
 
-        renderedRoutes.forEach(route => {
-          route.html = minify(route.html, this._options.minify)
-        })
+          let renderedRoutes = await PrerendererInstance.renderRoutes(batch || [])
 
-        return renderedRoutes
-      })
-      // Calculate outputPath if it hasn't been set already.
-      .then(renderedRoutes => {
-        renderedRoutes.forEach(rendered => {
-          if (!rendered.outputPath) {
-            rendered.outputPath = path.join(this._options.outputDir || this._options.staticDir, rendered.route, 'index.html')
+          // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
+          if (this._options.postProcessHtml) {
+            renderedRoutes = renderedRoutes.map(renderedRoute => {
+              const processed = this._options.postProcessHtml(renderedRoute)
+              if (typeof processed === 'string') renderedRoute.html = processed
+              else renderedRoute = processed
+              return renderedRoute
+            })
           }
-        })
 
-        return renderedRoutes
-      })
-      // Create dirs and write prerendered files.
-      .then(processedRoutes => {
-        const promises = Promise.all(processedRoutes.map(processedRoute => {
-          return mkdirp(path.dirname(processedRoute.outputPath))
-            .then(() => {
-              return new Promise((resolve, reject) => {
-                compilerFS.writeFile(processedRoute.outputPath, processedRoute.html.trim(), err => {
-                  if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`)
-                  else resolve()
+          // Run postProcess hooks.
+          if (this._options.postProcess) {
+            renderedRoutes = await Promise.all(renderedRoutes.map(renderedRoute => this._options.postProcess(renderedRoute)))
+          }
+
+          // Check to ensure postProcess hooks returned the renderedRoute object properly.
+          if (!renderedRoutes.every(r => typeof r === 'object')) {
+            throw new Error('[prerender-spa-plugin] Rendered routes are empty, did you forget to return the `context` object in postProcess?')
+          }
+
+          // Minify html files if specified in config.
+          if (this._options.minify) {
+            renderedRoutes.forEach(route => {
+              route.html = minify(route.html, this._options.minify)
+            })
+          }
+
+          // Calculate outputPath if it hasn't been set already.
+          renderedRoutes.forEach(rendered => {
+            if (!rendered.outputPath) {
+              rendered.outputPath = path.join(this._options.outputDir || this._options.staticDir, rendered.route, 'index.html')
+            }
+          })
+
+          // Create dirs and write prerendered files.
+          reportProgress((batchNumber) / (numBatches * 2), `writing batch ${batchNumber}/${numBatches}`)
+          await Promise.all(renderedRoutes.map(route => {
+            const paths = [route.outputPath]
+            if (Array.isArray(route.alternateOutputPaths)) {
+              paths.push(...route.alternateOutputPaths)
+            }
+
+            return Promise.all(paths.map(outputPath => mkdirp(path.dirname(outputPath))
+              .then(() => {
+                return new Promise((resolve, reject) => {
+                  compilerFS.writeFile(outputPath, route.html.trim(), err => {
+                    if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${outputPath}" \n ${err}.`)
+                    else resolve()
+                  })
                 })
               })
-            })
-            .catch(err => {
-              if (typeof err === 'string') {
-                err = `[prerender-spa-plugin] Unable to create directory ${path.dirname(processedRoute.outputPath)} for route ${processedRoute.route}. \n ${err}`
-              }
+              .catch(err => {
+                if (typeof err === 'string') {
+                  err = `[prerender-spa-plugin] Unable to create directory ${path.dirname(outputPath)} for route ${route.route}. \n ${err}`
+                }
 
-              throw err
-            })
-        }))
+                throw err
+              })
+            ))
+          }))
 
-        return promises
-      })
-      .then(r => {
-        PrerendererInstance.destroy()
-        done()
-      })
-      .catch(err => {
-        PrerendererInstance.destroy()
-        const msg = '[prerender-spa-plugin] Unable to prerender all routes!'
-        console.error(msg)
-        compilation.errors.push(new Error(msg))
-        done()
-      })
+          await PrerendererInstance.destroy()
+
+          // small time padding to allow system to fully free server resources
+          await new Promise(resolve => setTimeout(resolve, 250))
+
+          ++batchNumber
+        } catch (err) {
+          await PrerendererInstance.destroy()
+          throw err
+        }
+      }
+    } catch (err) {
+      const msg = '[prerender-spa-plugin] Unable to prerender all routes!'
+      console.error(msg)
+      console.error(err)
+      compilation.errors.push(new Error(msg))
+    }
+    done()
   }
 
   if (compiler.hooks) {
-    const plugin = { name: 'PrerenderSPAPlugin' }
+    const plugin = { name: 'PrerenderSPAPlugin', context: true }
     compiler.hooks.afterEmit.tapAsync(plugin, afterEmit)
   } else {
     compiler.plugin('after-emit', afterEmit)
   }
 }
-
-PrerenderSPAPlugin.PuppeteerRenderer = PuppeteerRenderer
 
 module.exports = PrerenderSPAPlugin
