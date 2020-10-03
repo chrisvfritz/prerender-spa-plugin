@@ -162,7 +162,7 @@ module.exports = {
 
 ### v2.x Compability
 Most usages of `prerender-spa-plugin` v2.x should be compatible with v3.x.
-The exception being advanced configuration options that controlled PhantomJS. These have been replaced by pluggable renderers with their own specific configuration options.
+The exception being advanced configuration options that controlled PhantomJS. These have been replaced by pluggable renderers with their specific configuration options.
 
 If you use this format, you will be greeted with a warning prompting you to migrate to the new object-based configuration format, but it should still function for the time being.
 
@@ -236,7 +236,7 @@ module.exports = {
 ```
 
 #### Additional Changes
-- It is no longer possible to use multiple `renderAfterX` (`captureAfterX`) options at the same time. Only one may be selected. The reason for this removal is to prevent ambiguity.
+- It is no longer possible to use multiple `renderAfterX` (`captureAfterX`) options at the same time. The only one may be selected. The reason for this removal is to prevent ambiguity.
 - The recommended configuration format has changed from `new PrerenderSPAPlugin(staticDir: String, routes: Array<String>, config: Object)` to
   ```javascript
   new PrerenderSPAPlugin({
@@ -245,22 +245,22 @@ module.exports = {
     ...
   })
   ```
-  in order to reduce ambiguity. The old format still works for the time being.
-- The default renderer is no longer PhantomJS. It has been replaced with [puppeteer](https://github.com/GoogleChrome/puppeteer). It is fairly simple to develop your own renderer as well. An alternate [jsdom](https://github.com/tmpvar/jsdom)-based renderer is available at [@prerenderer/renderer-jsdom](https://www.npmjs.com/package/@prerenderer/renderer-jsdom).
+  to reduce ambiguity. The old format still works for the time being.
+- The default renderer is no longer PhantomJS. It has been replaced with [puppeteer](https://github.com/GoogleChrome/puppeteer). It is fairly simple to develop your renderer as well. An alternate [jsdom](https://github.com/tmpvar/jsdom)-based renderer is available at [@prerenderer/renderer-jsdom](https://www.npmjs.com/package/@prerenderer/renderer-jsdom).
 - `prerender-spa-plugin` is now based on [prerenderer](https://github.com/Tribex/prerenderer). Accordingly, most bugs should be reported in that repository.
 
 ## What is Prerendering?
 
-Recently, SSR (Server Side Rendering) has taken the JavaScript front-end world by storm. The fact that you can now render your sites and apps on the server before sending them to your clients is an absolutely *revolutionary* idea (and totally not what everyone was doing before JS client-side apps got popular in the first place...)
+Recently, SSR (Server Side Rendering) has taken the JavaScript front-end world by storm. The fact that you can now render your sites and apps on the server before sending them to your clients is a *revolutionary* idea (and not what everyone was doing before JS client-side apps got popular in the first place...)
 
 However, the same criticisms that were valid for PHP, ASP, JSP, (and such) sites are valid for server-side rendering today. It's slow, breaks fairly easily, and is difficult to implement properly.
 
-Thing is, despite what everyone might be telling you, you probably don't *need* SSR. You can get almost all the advantages of it (without the disadvantages) by using **prerendering.** Prerendering is basically firing up a headless browser, loading your app's routes, and saving the results to a static HTML file. You can then serve it with whatever static-file-serving solution you were using previously. It *just works* with HTML5 navigation and the likes. No need to change your code or add server-side rendering workarounds.
+Thing is, despite what everyone might be telling you, you probably don't *need* SSR. You can get almost all the advantages of it (without the disadvantages) by using **prerendering.** Prerendering is firing up a headless browser, loading your app's routes, and saving the results to a static HTML file. You can then serve it with whatever static-file-serving solution you were using previously. It *just works* with HTML5 navigation and the likes. No need to change your code or add server-side rendering workarounds.
 
 In the interest of transparency, there are some use-cases where prerendering might not be a great idea.
 
-- **Tons of routes** - If your site has hundreds or thousands of routes, prerendering will be really slow. Sure you only have to do it once per update, but it could take ages. Most people don't end up with thousands of static routes, but just in-case...
-- **Dynamic Content** - If your render routes that have content that's specific to the user viewing it or other dynamic sources, you should make sure you have placeholder components that can display until the dynamic content loads on the client-side. Otherwise it might be a tad weird.
+- **Tons of routes** - If your site has hundreds or thousands of routes, prerendering will be slow. Sure you only have to do it once per update, but it could take ages. Most people don't end up with thousands of static routes, but just in-case...
+- **Dynamic Content** - If your render routes that have content that's specific to the user viewing it or other dynamic sources, you should make sure you have placeholder components that can display until the dynamic content loads on the client-side. Otherwise, it might be a tad weird.
 
 ## Available Renderers
 - `@prerenderer/renderer-puppeteer` - Uses [puppeteer](https://github.com/GoogleChrome/puppeteer) to render pages in headless Chrome.
@@ -268,9 +268,9 @@ In the interest of transparency, there are some use-cases where prerendering mig
 
 ### Which renderer should I use?
 
-**Use `@prerenderer/renderer-puppeteer` if:** You're prerendering up to a couple hundred pages and want accurate results (bye-bye RAM!).
+**Use `@prerenderer/renderer-puppeteer` if:** You're prerendering up to a couple of hundred pages and want accurate results (bye-bye RAM!).
 
-**Use `@prerenderer/renderer-jsdom` if:** You need to prerender thousands upon thousands of pages, but quality isn't all that important, and you're willing to work around issues for more advanced cases. (Programmatic SVG support, etc.)
+**Use `@prerenderer/renderer-jsdom` if:** You need to prerender thousands upon thousands of pages, but the quality isn't all that important, and you're willing to work around issues for more advanced cases. (Programmatic SVG support, etc.)
 
 ## Documentation
 
@@ -315,7 +315,7 @@ The `postProcess(Object context): Object | Promise` function in your renderer co
 
 You can modify `context.html` to change what gets written to the prerendered files and/or modify `context.route` or `context.outputPath` to change the output location.
 
-You are expected to adjust those properties as needed, then return the context object, or a promise that resolves to it like so:
+You are expected to adjust those properties as needed, then return the context object or a promise that resolves to it like so:
 
 ```javascript
 postProcess(context) {
@@ -338,7 +338,7 @@ postProcess(context) {
 ```
 
 #### Vue.js Notes
-If you are having issues prerendering with Vue.js, try adding the [`data-server-rendered="true"`](https://ssr.vuejs.org/guide/hydration.html) attribute to your root app element. This will cause Vue to treat your current page as an already-rendered app and update it rather than completely rerendering the whole tree. You can add the attribute using `postProcess` or by manipulating the DOM with JavaScript prior prerendering with `renderAfterDocumentEvent`.
+If you are having issues prerendering with Vue.js, try adding the [`data-server-rendered="true"`](https://ssr.vuejs.org/guide/hydration.html) attribute to your root app element. This will cause Vue to treat your current page as an already-rendered app and update it rather than completely re-rendering the whole tree. You can add the attribute using `postProcess` or by manipulating the DOM with JavaScript before prerendering with `renderAfterDocumentEvent`.
 
 ---
 
@@ -407,14 +407,14 @@ Either way, there will not be any unnecessary styles inside JS.
 - For obvious reasons, `prerender-spa-plugin` only works for SPAs that route using the HTML5 history API. `index.html#/hash/route` URLs will unfortunately not work.
 - Whatever client-side rendering library you're using should be able to at least replace any server-rendered content or diff with it.
   - For **Vue.js 1** use [`replace: false`](http://vuejs.org/api/#replace) on root components.
-  - For **Vue.js 2**  Ensure your root component has the same id as the prerendered element it's replacing. Otherwise you'll end up with duplicated content.
+  - For **Vue.js 2**  Ensure your root component has the same id as the prerendered element it's replacing. Otherwise, you'll end up with duplicated content.
 
 ---
 
 ## Alternatives
 
 - [react-snap](https://github.com/stereobooster/react-snap) - Zero-configuration framework-agnostic prerendering. Does not depend on webpack. Handles a variety of edge-cases.
-- [snapshotify](https://github.com/errorception/snapshotify) - An experimental prerenderer that performes a number of speed optimizations.
+- [snapshotify](https://github.com/errorception/snapshotify) - An experimental prerenderer that performs several speed optimizations.
 - [presite](https://github.com/egoist/presite) - Minimal-configuration framework-agnostic prerendering.
 - [prerenderer](https://github.com/tribex/prerenderer) - Pluggable prerendering library that `prerender-spa-plugin` `v3+` is based on.
 
@@ -436,7 +436,7 @@ copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
