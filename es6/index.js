@@ -55,9 +55,13 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
   const compilerFS = compiler.outputFileSystem
 
   // From https://github.com/ahmadnassri/mkdirp-promise/blob/master/lib/index.js
-  const mkdirp = function (dir, opts) {
+  const mkdirp = function (dir, opts = {}) {
     return new Promise((resolve, reject) => {
-      compilerFS.mkdirp(dir, opts, (err, made) => err === null ? resolve(made) : reject(err))
+      // webpack5: mkdirp is no longer expected to be a function on the output file system
+      // https://github.com/webpack/webpack.js.org/issues/3110
+      // Since Node 10, fs.mkdir(path[, options], callback) supporting mkdir recursively
+      opts.recursive = true
+      fs.mkdir(dir, opts, (err, made) => err === null ? resolve(made) : reject(err))
     })
   }
 
