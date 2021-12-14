@@ -1,3 +1,5 @@
+**Looking for new maintainers, please reply to [this issue](https://github.com/chrisvfritz/prerender-spa-plugin/issues/477) if you are interested.**
+
 <h1 align="center">Prerender SPA Plugin</h1>
 <p align="center">
   <em>Flexible, framework-agnostic static site generation for sites and SPAs built with webpack.</em>
@@ -9,9 +11,9 @@
 
 <div align="center">
 
+[![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)]()
 [![npm version](https://img.shields.io/npm/v/prerender-spa-plugin.svg)]()
 [![npm downloads](https://img.shields.io/npm/dt/prerender-spa-plugin.svg)]()
-[![Dependency Status](https://img.shields.io/david/chrisvfritz/prerender-spa-plugin.svg)](https://david-dm.org/chrisvfritz/prerender-spa-plugin)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://standardjs.com/)
 [![license](https://img.shields.io/github/license/chrisvfritz/prerender-spa-plugin.svg)]()
 
