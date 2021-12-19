@@ -3,6 +3,7 @@
 var path = require('path');
 var Prerenderer = require('@prerenderer/prerenderer');
 var PuppeteerRenderer = require('@prerenderer/renderer-puppeteer');
+var mkdirp = require("mkdirp");
 
 var _require = require('html-minifier'),
     minify = _require.minify;
@@ -67,9 +68,9 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
   var compilerFS = compiler.outputFileSystem;
 
   // From https://github.com/ahmadnassri/mkdirp-promise/blob/master/lib/index.js
-  var mkdirp = function mkdirp(dir, opts) {
+  var mkdirpPromise = function mkdirpPromise(dir, opts) {
     return new Promise(function (resolve, reject) {
-      compilerFS.mkdirp(dir, opts, function (err, made) {
+      mkdirp(dir, opts, function (err, made) {
         return err === null ? resolve(made) : reject(err);
       });
     });
@@ -130,7 +131,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
     // Create dirs and write prerendered files.
     .then(function (processedRoutes) {
       var promises = Promise.all(processedRoutes.map(function (processedRoute) {
-        return mkdirp(path.dirname(processedRoute.outputPath)).then(function () {
+        return mkdirpPromise(path.dirname(processedRoute.outputPath)).then(function () {
           return new Promise(function (resolve, reject) {
             compilerFS.writeFile(processedRoute.outputPath, processedRoute.html.trim(), function (err) {
               if (err) reject(`[prerender-spa-plugin] Unable to write rendered route to file "${processedRoute.outputPath}" \n ${err}.`);else resolve();
