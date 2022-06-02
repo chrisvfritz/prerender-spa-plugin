@@ -15,7 +15,7 @@
     "@angular/animations": "^5.2.0",
     "@angular/common": "^5.2.0",
     "@angular/compiler": "^5.2.0",
-    "@angular/core": "^5.2.0",
+    "@angular/core": "^11.0.5",
     "@angular/forms": "^5.2.0",
     "@angular/http": "^5.2.0",
     "@angular/platform-browser": "^5.2.0",
