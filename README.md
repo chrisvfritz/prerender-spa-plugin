@@ -1,4 +1,4 @@
-**Looking for new maintainers, please reply to [this issue](https://github.com/chrisvfritz/prerender-spa-plugin/issues/477) if you are interested.**
+**[DEPRECATED]**
 
 <h1 align="center">Prerender SPA Plugin</h1>
 <p align="center">
