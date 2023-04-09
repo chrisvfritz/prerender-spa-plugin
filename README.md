@@ -1,6 +1,6 @@
-**[DEPRECATED]**
+<h1 align="center">[DEPRECATED]</h1>
 
-<h1 align="center">Prerender SPA Plugin</h1>
+<h2 align="center">Prerender SPA Plugin</h2>
 <p align="center">
   <em>Flexible, framework-agnostic static site generation for sites and SPAs built with webpack.</em>
 </p>
