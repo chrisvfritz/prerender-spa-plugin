@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@angular-devkit/core": "0.3.1",
-    "@angular/cli": "~1.7.0",
+    "@angular/cli": "~15.0.4",
     "@angular/compiler-cli": "^5.2.0",
     "@angular/language-service": "^5.2.0",
     "@ngtools/webpack": "1.10.0",
@@ -37,9 +37,9 @@
     "autoprefixer": "^7.2.3",
     "circular-dependency-plugin": "^4.2.1",
     "codelyzer": "^4.0.1",
-    "copy-webpack-plugin": "~4.4.1",
+    "copy-webpack-plugin": "~4.4.3",
     "file-loader": "^1.1.5",
-    "html-webpack-plugin": "^2.29.0",
+    "html-webpack-plugin": "^5.5.0",
     "istanbul-instrumenter-loader": "^3.0.0",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -63,7 +63,7 @@
     "typescript": "~2.5.3",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "url-loader": "^0.6.2",
-    "webpack": "~3.11.0",
+    "webpack": "~5.75.0",
     "webpack-dev-server": "~2.11.0"
   }
 }
