@@ -57,7 +57,11 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
   // From https://github.com/ahmadnassri/mkdirp-promise/blob/master/lib/index.js
   const mkdirp = function (dir, opts) {
     return new Promise((resolve, reject) => {
-      compilerFS.mkdirp(dir, opts, (err, made) => err === null ? resolve(made) : reject(err))
+      try {
+        compilerFS.mkdirp(dir, opts, (err, made) => err === null ? resolve(made) : reject(err))
+      } catch(e) {
+        compilerFS.mkdir(dir, opts, (err, made) => err === null ? resolve(made) : reject(err))
+      }
     })
   }
 
@@ -116,7 +120,7 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
       // Create dirs and write prerendered files.
       .then(processedRoutes => {
         const promises = Promise.all(processedRoutes.map(processedRoute => {
-          return mkdirp(path.dirname(processedRoute.outputPath))
+          return mkdirp(path.dirname(processedRoute.outputPath), { recursive: true })
             .then(() => {
               return new Promise((resolve, reject) => {
                 compilerFS.writeFile(processedRoute.outputPath, processedRoute.html.trim(), err => {
