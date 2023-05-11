@@ -3,7 +3,7 @@ const Prerenderer = require('@prerenderer/prerenderer')
 const PuppeteerRenderer = require('@prerenderer/renderer-puppeteer')
 const { minify } = require('html-minifier')
 
-function PrerenderSPAPlugin (...args) {
+function PrerenderSPAPlugin(...args) {
   const rendererOptions = {} // Primarily for backwards-compatibility.
 
   this._options = {}
@@ -12,7 +12,7 @@ function PrerenderSPAPlugin (...args) {
   if (args.length === 1) {
     this._options = args[0] || {}
 
-  // Backwards-compatibility with v2
+    // Backwards-compatibility with v2
   } else {
     console.warn("[prerender-spa-plugin] You appear to be using the v2 argument-based configuration options. It's recommended that you migrate to the clearer object-based configuration system.\nCheck the documentation for more information.")
     let staticDir, routes
@@ -144,7 +144,9 @@ PrerenderSPAPlugin.prototype.apply = function (compiler) {
         PrerendererInstance.destroy()
         const msg = '[prerender-spa-plugin] Unable to prerender all routes!'
         console.error(msg)
+        console.error(err)
         compilation.errors.push(new Error(msg))
+        compilation.errors.push(err)
         done()
       })
   }
