@@ -6,7 +6,7 @@
     "build": "webpack --progress --hide-modules"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^4.4.1",
+    "copy-webpack-plugin": "^4.6.0",
     "prerender-spa-plugin": "^3.0.0",
     "webpack": "^3.11.0"
   }
